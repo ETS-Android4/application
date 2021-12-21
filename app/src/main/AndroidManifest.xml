@@ -7,9 +7,9 @@
     <application
         android:usesCleartextTraffic="true"
         android:allowBackup="true"
-        android:icon="@drawable/logo"
+        android:icon="@drawable/app_logo_main"
         android:label="GT Time"
-        android:roundIcon="@drawable/logo"
+        android:roundIcon="@drawable/app_logo_main"
         android:supportsRtl="true"
         android:theme="@style/Theme">
         <activity android:name = ".Splashscreen"
