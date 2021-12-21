@@ -85,8 +85,8 @@
                 android:id="@+id/courseTime"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:minWidth="110dp"
-                android:maxWidth="110dp"
+                android:minWidth="140dp"
+                android:maxWidth="140dp"
                 android:text="Timeline"
                 android:theme="@style/Custom.App.TextView.FixedSizeView" />
 
