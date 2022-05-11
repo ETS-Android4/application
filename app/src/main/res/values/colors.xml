@@ -2,26 +2,18 @@
 <resources>
     <color name = "colorPrimary">#FFF7F69E</color>
     <color name = "colorPrimaryWeak">#FFFFB1</color>
-    <color name = "colorPrimaryDark">#EEE8AA</color>
-    <color name = "colorSecondary">#FDEBD2</color>
-    <color name="colorAccent">#F8E4EB</color>
-    <color name = "colorSkyBlue">#00C5FF</color>
-    <color name = "colorBlue">#0063DC</color>
 
     <color name = "colorWarning">#000000</color>
     <color name = "colorWhite">#ffffff</color>
     <color name = "colorWeakWhite">#F5F8FF</color>
-    <color name = "colorAliceBlue">#E8F1FF</color>
     <color name = "colorGray">#949599</color>
     <color name = "colorWeakGray">#CBD9EF</color>
 
     <!-- major theme color -->
     <color name = "colorTheme">#F2284E</color>
-    <color name = "colorWeakTheme">#F997AC</color>
     <color name = "colorSubTheme">#7ABED7</color>
 
     <!-- log color -->
-    <color name = "colorLogo">#40b7ad</color>
     <!-- imported Library colors -->
     <string-array name="default_sticker_color">
         <item>#f08676</item>

@@ -12,19 +12,12 @@
         android:roundIcon="@drawable/app_logo_main"
         android:supportsRtl="true"
         android:theme="@style/Theme">
-        <activity android:name = ".Splashscreen"
+        <activity android:name = ".ui.activity.MainActivity"
             android:label = "GT Time">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-        <activity android:name=".ui.activity.MainActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
         <activity android:name = ".Pop"

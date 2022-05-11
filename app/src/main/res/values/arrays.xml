@@ -1,15 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string-array name="my_header_title">
-        <item></item>
-        <item>Mon</item>
-        <item>Tue</item>
-        <item>Wed</item>
-        <item>Thu</item>
-        <item>Fri</item>
-    </string-array>
-
     <string-array name = "semesterText">
         <item>Fall 2021</item>
         <item>Spring 2022</item>
@@ -22,20 +13,7 @@
         <item>202205</item>
     </string-array>
 
-    <string-array name="graduateMajor">
-        <item>Major</item>
-        <item>Electives</item>
-    </string-array>
-
     <!--    student type -->
-    <string-array name="undergraduateCourseType">
-        <item>Major</item>
-        <item>Elective</item>
-    </string-array>
-
-    <string-array name="graduateCourseType">
-        <item>Major(Graduate)</item>
-    </string-array>
 
     <!-- Georgia Tech major -->
     <string-array name="major">
@@ -1561,9 +1539,6 @@
         <item>INTA 8997</item>
         <item>INTA 8998</item>
         <item>INTA 9000</item>
-    </string-array>
-    <string-array name="InternationalLogistics">
-
     </string-array>
     <string-array name="Internship">
         <item>INTN 2000</item>
