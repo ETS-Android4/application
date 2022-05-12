@@ -1,0 +1,1 @@
+Following directory stores code from server
