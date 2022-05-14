@@ -1,5 +1,5 @@
 package com.gttime.android;
 
-public interface CallbackListener {
-    public void callback(String filter);
+public interface CallbackListener <T> {
+    public void callback(T param);
 }

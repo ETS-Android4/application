@@ -123,7 +123,6 @@ public class ScheduleFragment extends Fragment {
 
         chipGroup = getView().findViewById(R.id.semesterGroup);
 
-        final ExecutorService service = Executors.newSingleThreadExecutor();
         Map<Integer, String> semester;
         String[] semesterText;
         int[] semesterVal;
@@ -134,6 +133,7 @@ public class ScheduleFragment extends Fragment {
                     return Request.queryTerm();
                 }
             };
+            ExecutorService service = Executors.newSingleThreadExecutor();
             Future<int[]> future = service.submit(task);
             semesterVal = future.get();
             semesterText = KeyValPair.mapTerm(semesterVal);

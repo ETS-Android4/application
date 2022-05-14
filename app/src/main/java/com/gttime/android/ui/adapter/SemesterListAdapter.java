@@ -59,7 +59,7 @@ public class SemesterListAdapter <K,V> extends BaseAdapter {
             public void onClick(View v) {
                 setSelected(position);
                 SemesterListAdapter.this.notifyDataSetChanged();
-                callbackListner.callback(semesterMap.get(keyset[position]).toString()); // HACK
+                callbackListner.callback(semesterMap.get(keyset[position]).toString());
             }
         });
 

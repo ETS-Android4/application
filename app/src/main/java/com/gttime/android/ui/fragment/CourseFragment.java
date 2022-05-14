@@ -179,8 +179,6 @@ public class CourseFragment extends Fragment {
         subjectSpinner = getView().findViewById(R.id.subjectID);
         areaSpinner = getView().findViewById(R.id.areaID);
 
-        final ExecutorService service = Executors.newSingleThreadExecutor();
-
         universityGroupID.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
@@ -188,12 +186,14 @@ public class CourseFragment extends Fragment {
                 selectedUniversity = gradeID.getText().toString();
                 progress.show();
                 try {
+                    // TODO: Figure out way to call Request.ExecuteQuery with primitives
                     Callable<int[]> task =  new Callable<int[]>() {
                         @Override
                         public int[] call() throws Exception {
                             return Request.queryTerm();
                         }
                     };
+                    ExecutorService service = Executors.newSingleThreadExecutor();
                     Future<int[]> future = service.submit(task);
                     semesterVal = future.get();
                     semesterText = KeyValPair.mapTerm(semesterVal);
@@ -216,14 +216,13 @@ public class CourseFragment extends Fragment {
                 selectedTermID = String.valueOf(semester.get(selectedTerm));
 
                 try {
-                    Callable<String[]> task = new Callable<String[]>() {
+                    String[] subjectVal = Request.ExecuteQuery(new Callable<String[]>() {
                         @Override
                         public String[] call() throws Exception {
                             return Request.queryMajor(selectedUniversity, selectedTermID);
                         }
-                    };
-                    Future<String[]> future = service.submit(task);
-                    subjectAdapter = new ArrayAdapter(getActivity(), android.R.layout.simple_spinner_dropdown_item, future.get());
+                    });
+                    subjectAdapter = new ArrayAdapter(getActivity(), android.R.layout.simple_spinner_dropdown_item, subjectVal);
                 } catch (Exception e) {
                     alertDialog.show();
                 }
@@ -245,14 +244,13 @@ public class CourseFragment extends Fragment {
             selectedArea = subjectSpinner.getSelectedItem().toString();
 
             try {
-                Callable<String[]> task = new Callable<String[]>() {
+                String[] areaVal = Request.ExecuteQuery(new Callable<String[]>() {
                     @Override
                     public String[] call() throws Exception {
                         return Request.queryArea(selectedUniversity, selectedTermID, selectedArea);
                     }
-                };
-                Future<String[]> future = service.submit(task);
-                areaAdapter = new ArrayAdapter(getActivity(), android.R.layout.simple_spinner_dropdown_item, future.get());
+                });
+                areaAdapter = new ArrayAdapter(getActivity(), android.R.layout.simple_spinner_dropdown_item, areaVal);
             } catch (Exception e) {
                 alertDialog.show();
             }
@@ -272,7 +270,9 @@ public class CourseFragment extends Fragment {
             return Request.queryTerm();
         }
     };
+    ExecutorService service = Executors.newSingleThreadExecutor();
     Future<int[]> future = service.submit(task);
+
     try {
         semesterVal = future.get();
         semesterText = KeyValPair.mapTerm(semesterVal);

@@ -1,5 +1,6 @@
 package com.gttime.android.request;
 
+import com.gttime.android.CallbackListener;
 import com.gttime.android.net.HttpConnection;
 
 import org.json.JSONArray;
@@ -7,6 +8,11 @@ import org.json.JSONObject;
 
 import java.net.ConnectException;
 import java.net.URLEncoder;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 public final class Request {
 
@@ -94,4 +100,18 @@ public final class Request {
             throw new ConnectException(e.toString());
         }
     }
+
+    public static <T> T[] ExecuteQuery(Callable<T[]> task) throws ExecutionException, InterruptedException {
+        ExecutorService service = Executors.newSingleThreadExecutor();
+        Future<T[]> future = service.submit(task);
+
+        try {
+            return future.get();
+        } catch (ExecutionException e) {
+            throw e;
+        } catch (InterruptedException e) {
+            throw e;
+        }
+    }
+
 }

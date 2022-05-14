@@ -146,7 +146,6 @@ public class StatisticsFragment extends Fragment {
         semesterTextView = getView().findViewById(R.id.semesterText);
         semesterTextView.setText(selectedSemester);
 
-        final ExecutorService service = Executors.newSingleThreadExecutor();
         try {
             Callable<int[]> task =  new Callable<int[]>() {
                 @Override
@@ -154,6 +153,7 @@ public class StatisticsFragment extends Fragment {
                     return Request.queryTerm();
                 }
             };
+            ExecutorService service = Executors.newSingleThreadExecutor();
             Future<int[]> future = service.submit(task);
             this.semesterVal = future.get();
             this.semesterText = KeyValPair.mapTerm(semesterVal);
@@ -164,10 +164,10 @@ public class StatisticsFragment extends Fragment {
         }
 
         filterSemesterButton = getView().findViewById(R.id.statisticFilter);
-        filterSemesterDialog = new FilterSemesterDialog(new CallbackListener() {
+        filterSemesterDialog = new FilterSemesterDialog(new CallbackListener<String>() {
             @Override
-            public void callback(String filter) {
-                setSemester(filter);
+            public void callback(String param) {
+                setSemester(param);
                 adapter.notifyDataSetChanged();
                 new BackgroundTask().execute();
             }

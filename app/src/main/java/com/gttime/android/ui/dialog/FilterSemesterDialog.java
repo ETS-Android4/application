@@ -68,7 +68,6 @@ public class FilterSemesterDialog extends BottomSheetDialogFragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        final ExecutorService service = Executors.newSingleThreadExecutor();
         Map<String, Integer> semester;
         String[] semesterText;
         int[] semesterVal;
@@ -79,9 +78,9 @@ public class FilterSemesterDialog extends BottomSheetDialogFragment {
                     return Request.queryTerm();
                 }
             };
+            ExecutorService service = Executors.newSingleThreadExecutor();
             Future<int[]> future = service.submit(task);
-            int[] result = future.get();
-            semesterVal = result;
+            semesterVal = future.get();
             semesterText = KeyValPair.mapTerm(semesterVal);
 
             semester = (new MapBuilder(IntegerUtil.parseIntegerArr(semesterVal), semesterText).build());
