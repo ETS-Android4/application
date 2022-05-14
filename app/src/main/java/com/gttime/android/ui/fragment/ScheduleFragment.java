@@ -11,10 +11,14 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
 
 import com.gttime.android.component.Course;
 import com.gttime.android.component.CourseSchedule;
 import com.gttime.android.R;
+import com.gttime.android.mapping.KeyValPair;
+import com.gttime.android.request.Request;
+import com.gttime.android.ui.adapter.SemesterListAdapter;
 import com.gttime.android.util.IOUtil;
 import com.gttime.android.util.IntegerUtil;
 import com.gttime.android.util.JSONUtil;
@@ -22,12 +26,16 @@ import com.github.tlaabs.timetableview.Schedule;
 import com.github.tlaabs.timetableview.TimetableView;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
-import com.gttime.android.util.MapArray;
+import com.gttime.android.util.MapBuilder;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 
 /**
@@ -51,7 +59,7 @@ public class ScheduleFragment extends Fragment {
 
     private int chipID;
 
-    private MapArray<String, String> semester;
+    private Map<Integer, String> semester;
 
     public ScheduleFragment() {
         // Required empty public constructor
@@ -86,10 +94,6 @@ public class ScheduleFragment extends Fragment {
         if(savedInstanceState != null) {
             this.chipID = savedInstanceState.getInt("chipID");
         }
-
-        else {
-            this.chipID = IntegerUtil.parseInt(getResources().getStringArray(R.array.semesterID)[0]);
-        }
     }
 
     @Override
@@ -109,18 +113,44 @@ public class ScheduleFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
+        final ProgressDialog progress = new ProgressDialog(getActivity());
+        progress.setMessage("Wait while loading...");
+        progress.setTitle("Loading");
+        progress.show();
+
         schedules = new ArrayList<Schedule>();
         timeTable = getView().findViewById(R.id.timetable);
 
         chipGroup = getView().findViewById(R.id.semesterGroup);
 
-        semester = new MapArray<String, String>(getResources().getStringArray(R.array.semesterText), getResources().getStringArray(R.array.semesterID));
+        final ExecutorService service = Executors.newSingleThreadExecutor();
+        Map<Integer, String> semester;
+        String[] semesterText;
+        int[] semesterVal;
+        try {
+            Callable<int[]> task =  new Callable<int[]>() {
+                @Override
+                public int[] call() throws Exception {
+                    return Request.queryTerm();
+                }
+            };
+            Future<int[]> future = service.submit(task);
+            semesterVal = future.get();
+            semesterText = KeyValPair.mapTerm(semesterVal);
 
-        for (Map.Entry<String, String> entry: semester.entrySet()) {
-            Chip chip = (Chip) getLayoutInflater().inflate(R.layout.chip_choice, chipGroup, false);
-            chip.setText(entry.getKey());
-            chip.setId(IntegerUtil.parseInt(entry.getValue()));
-            chipGroup.addView(chip);
+            semester = (new MapBuilder(IntegerUtil.parseIntegerArr(semesterVal), semesterText).build());
+
+            for (int i=0; i<semesterVal.length; i++) {
+                Chip chip = (Chip) getLayoutInflater().inflate(R.layout.chip_choice, chipGroup, false);
+                chip.setId(semesterVal[i]);
+                chip.setText(semester.get(semesterVal[i]));
+                chipGroup.addView(chip);
+            }
+
+            chipID = chipID==0? semesterVal[0]:chipID;
+
+        } catch (Exception e) {
+
         }
 
         chipGroup.setSingleSelection(true);
@@ -132,21 +162,14 @@ public class ScheduleFragment extends Fragment {
             public void onCheckedChanged(ChipGroup group, int checkedId) {
                 chipID = chipGroup.getCheckedChipId();
                 timeTable.removeAll();
-                ProgressDialog progressDialog = new ProgressDialog(getActivity());
-                progressDialog.setMessage("Loading");
-                progressDialog.show();
+                progress.show();
                 new BackgroundTask().execute();
-                progressDialog.dismiss();
-                progressDialog.hide();
+                progress.dismiss();
             }
         });
 
-        ProgressDialog progressDialog = new ProgressDialog(getActivity());
-        progressDialog.setMessage("Loading");
-        progressDialog.show();
         new BackgroundTask().execute();
-        progressDialog.dismiss();
-        progressDialog.hide();
+        progress.dismiss();
 
         timeTable.setOnStickerSelectEventListener(new TimetableView.OnStickerSelectedListener() {
             @Override
@@ -179,9 +202,9 @@ public class ScheduleFragment extends Fragment {
 
         @Override
         protected void onPostExecute(Object o) {
+            schedules.clear();
             List<Course> registeredCourses = JSONUtil.fetchCourse((String) o);
             for(int i = 0; i < registeredCourses.size(); i++) {
-                schedules.clear();
                 int days = registeredCourses.get(i).getCourseDay().length();
 
                 String courseInstructor = registeredCourses.get(i).getCourseInstructor();

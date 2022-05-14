@@ -14,13 +14,12 @@ import androidx.fragment.app.Fragment;
 
 import com.gttime.android.component.Course;
 import com.gttime.android.R;
-import com.gttime.android.component.CourseSeat;
+import com.gttime.android.component.CourseInfo;
 import com.gttime.android.ui.activity.MainActivity;
 import com.gttime.android.util.IOUtil;
 import com.gttime.android.util.IntegerUtil;
 import com.gttime.android.util.JSONUtil;
 import com.github.tlaabs.timetableview.Time;
-import com.gttime.android.util.MapArray;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -29,16 +28,16 @@ import java.util.concurrent.Executor;
 
 public class CourseListAdapter extends BaseAdapter {
     private Context context;
-    private List<CourseSeat> courseSeats; // list of course from db
+    private List<CourseInfo> courseInfos; // list of course from db
+    private List<Course> userCourseList; // list of course registered from user
     private Fragment parent;
     private String userID = MainActivity.userID;
-    private List<Course> userCourseList; // list of course registered for user
     private String semester;
     public static int totalCredit;
 
-    public CourseListAdapter(Context context, List<CourseSeat> courseSeats, Fragment parent) {
+    public CourseListAdapter(Context context, List<CourseInfo> courseInfos, Fragment parent) {
         this.context = context;
-        this.courseSeats = courseSeats; // courseList in adapter
+        this.courseInfos = courseInfos; // courseList in adapter
         this.parent = parent;
         this.userCourseList = new ArrayList<Course>(); // courseList from user dataabase
         this.semester = "";
@@ -47,12 +46,12 @@ public class CourseListAdapter extends BaseAdapter {
 
     @Override
     public int getCount() {
-        return courseSeats.size();
+        return courseInfos.size();
     }
 
     @Override
     public Object getItem(int position) {
-        return courseSeats.get(position);
+        return courseInfos.get(position);
     }
 
     @Override
@@ -74,37 +73,35 @@ public class CourseListAdapter extends BaseAdapter {
         TextView courseSeatActual = v.findViewById(R.id.seatActual);
         TextView courseSeatWaitlist = v.findViewById(R.id.seatWaitlist);
 
-        MapArray<String, String> semesters = new MapArray<String, String>(context.getResources().getStringArray(R.array.semesterID), context.getResources().getStringArray(R.array.semesterText));
-
-        courseTitle.setText(courseSeats.get(position).getCourse().getCourseTitle()+"-"+ courseSeats.get(position).getCourse().getCourseSection());
-        if(courseSeats.get(position).getCourse().getCourseInstructor().equals("")) {
+        courseTitle.setText(courseInfos.get(position).getCourse().getCourseTitle()+"-"+ courseInfos.get(position).getCourse().getCourseSection());
+        if(courseInfos.get(position).getCourse().getCourseInstructor().equals("")) {
             courseInstructor.setText("TBA");
         }
 
         else {
-            courseInstructor.setText(courseSeats.get(position).getCourse().getCourseInstructor());
+            courseInstructor.setText(courseInfos.get(position).getCourse().getCourseInstructor());
         }
 
-        courseCredit.setText(courseSeats.get(position).getCourse().getCourseCredit());
-        courseTerm.setText(semesters.get(courseSeats.get(position).getCourse().getCourseTerm()));
-        courseCRN.setText(courseSeats.get(position).getCourse().getCourseCRN());
-        courseTime.setText(courseSeats.get(position).getCourse().getCourseTime());
-        courseDay.setText(courseSeats.get(position).getCourse().getCourseDay());
-        courseAttribute.setText(courseSeats.get(position).getCourse().getCourseAttribute());
-        courseSeatActual.setText("Actual:" + String.valueOf(courseSeats.get(position).getSeat().getSeatActual()) + '/' + String.valueOf(courseSeats.get(position).getSeat().getSeatCapacity()));
-        courseSeatWaitlist.setText("Waitlist:" + String.valueOf(courseSeats.get(position).getSeat().getWaitlistActual()) + '/' + String.valueOf(courseSeats.get(position).getSeat().getWaitlistCapacity()));
+        courseCredit.setText(courseInfos.get(position).getCourse().getCourseCredit());
+        courseTerm.setText(String.valueOf(courseInfos.get(position).getCourse().getCourseTerm()));
+        courseCRN.setText(courseInfos.get(position).getCourse().getCourseCRN());
+        courseTime.setText(courseInfos.get(position).getCourse().getCourseTime());
+        courseDay.setText(courseInfos.get(position).getCourse().getCourseDay());
+        courseAttribute.setText(courseInfos.get(position).getCourse().getCourseAttribute());
+        courseSeatActual.setText("Actual:" + String.valueOf(courseInfos.get(position).getSeat().getSeatActual()) + '/' + String.valueOf(courseInfos.get(position).getSeat().getSeatCapacity()));
+        courseSeatWaitlist.setText("Waitlist:" + String.valueOf(courseInfos.get(position).getSeat().getWaitlistActual()) + '/' + String.valueOf(courseInfos.get(position).getSeat().getWaitlistCapacity()));
 
 
         new BackgroundTask().execute();
 
-        v.setTag(courseSeats.get(position).getCourse().getCourseCRN());
+        v.setTag(courseInfos.get(position).getCourse().getCourseCRN());
 
         Button addSchedule = v.findViewById(R.id.addScheduleButton);
         addSchedule.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                if(alreadyIn(userCourseList, courseSeats.get(position).getCourse().getCourseCRN())) {
+                if(alreadyIn(userCourseList, courseInfos.get(position).getCourse().getCourseCRN())) {
 
                     AlertDialog.Builder alert = new AlertDialog.Builder(parent.getActivity());
                     AlertDialog dialog = alert.setMessage("Course is already registered in your schedule")
@@ -115,7 +112,7 @@ public class CourseListAdapter extends BaseAdapter {
 
                 }
 
-                int credit = IntegerUtil.parseInt(courseSeats.get(position).getCourse().getCourseCredit().split(" ")[0]);
+                int credit = IntegerUtil.parseInt(courseInfos.get(position).getCourse().getCourseCredit().split(" ")[0]);
 
                 if(exceedAllowedCredit(totalCredit, credit)) {
 
@@ -130,7 +127,7 @@ public class CourseListAdapter extends BaseAdapter {
                 }
 
 
-                if(!validate(courseSeats.get(position).getCourse(), userCourseList)) {
+                if(!validate(courseInfos.get(position).getCourse(), userCourseList)) {
 
                     AlertDialog.Builder alert = new AlertDialog.Builder(parent.getActivity());
                     AlertDialog dialog = alert.setMessage("Time duplicates with course registered")
@@ -152,7 +149,7 @@ public class CourseListAdapter extends BaseAdapter {
                     public void run() {
                         try
                         {
-                            boolean success = JSONUtil.appendCourse(new File(parent.getActivity().getFilesDir(), IOUtil.getFileName(semester)), courseSeats.get(position).getCourse());
+                            boolean success = JSONUtil.appendCourse(new File(parent.getActivity().getFilesDir(), IOUtil.getFileName(semester)), courseInfos.get(position).getCourse());
 
                             if(success)
                             {
@@ -167,9 +164,9 @@ public class CourseListAdapter extends BaseAdapter {
                                     }
                                 });
 
-                                userCourseList.add(courseSeats.get(position).getCourse());
+                                userCourseList.add(courseInfos.get(position).getCourse());
 
-                                int credit = IntegerUtil.parseInt(courseSeats.get(position).getCourse().getCourseCredit().split(" ")[0]);
+                                int credit = IntegerUtil.parseInt(courseInfos.get(position).getCourse().getCourseCredit().split(" ")[0]);
                                 totalCredit+= credit;
                                 return;
                             }

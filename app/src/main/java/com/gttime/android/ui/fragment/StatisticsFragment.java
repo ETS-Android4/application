@@ -1,11 +1,13 @@
 package com.gttime.android.ui.fragment;
 
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
@@ -17,19 +19,24 @@ import android.widget.TextView;
 
 import com.gttime.android.CallbackListener;
 import com.gttime.android.component.Course;
+import com.gttime.android.mapping.KeyValPair;
+import com.gttime.android.request.Request;
 import com.gttime.android.ui.dialog.FilterSemesterDialog;
 import com.gttime.android.R;
 import com.gttime.android.ui.adapter.StatisticsCourseListAdapter;
 import com.gttime.android.util.IOUtil;
 import com.gttime.android.util.IntegerUtil;
 import com.gttime.android.util.JSONUtil;
-import com.gttime.android.util.MapArray;
+import com.gttime.android.util.MapBuilder;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 
 /**
@@ -55,12 +62,14 @@ public class StatisticsFragment extends Fragment {
 
     public static int totalCredit = 0;
     public static TextView statCredit;
-    public TextView semesterText;
+    public TextView semesterTextView;
 
     private LinearLayout filterSemesterButton;
-    private MapArray<String, String> semester;
+    private Map<String, Integer> semester;
 
     private String selectedSemester;
+    private int[] semesterVal;
+    private String[] semesterText;
 
     public StatisticsFragment() {
         // Required empty public constructor
@@ -95,10 +104,6 @@ public class StatisticsFragment extends Fragment {
         if(savedInstanceState != null) {
             this.selectedSemester = savedInstanceState.getString("selectedSemester");
         }
-
-        else {
-            this.selectedSemester = getResources().getStringArray(R.array.semesterText)[0];
-        }
     }
 
     @Override
@@ -110,34 +115,67 @@ public class StatisticsFragment extends Fragment {
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putString("selectedSemester", semesterText.getText().toString());
+        outState.putString("selectedSemester", semesterTextView.getText().toString());
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        // HACK: create class that maps it automatically
-        semester = new MapArray<String, String>(getResources().getStringArray(R.array.semesterText), getResources().getStringArray(R.array.semesterID));
+        final ProgressDialog progress = new ProgressDialog(getActivity());
+        progress.setMessage("Wait while loading...");
+        progress.setTitle("Loading");
+        progress.show();
+
+        final AlertDialog alertDialog;
+        AlertDialog.Builder builder = new AlertDialog.Builder(StatisticsFragment.this.getActivity());
+        alertDialog = builder.setMessage("Connection Error")
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        System.exit(1);
+                    }
+                })
+                .create();
+
+        progress.show();
+
+
+        statCredit = getView().findViewById(R.id.totalCredit);
+        semesterTextView = getView().findViewById(R.id.semesterText);
+        semesterTextView.setText(selectedSemester);
+
+        final ExecutorService service = Executors.newSingleThreadExecutor();
+        try {
+            Callable<int[]> task =  new Callable<int[]>() {
+                @Override
+                public int[] call() throws Exception {
+                    return Request.queryTerm();
+                }
+            };
+            Future<int[]> future = service.submit(task);
+            this.semesterVal = future.get();
+            this.semesterText = KeyValPair.mapTerm(semesterVal);
+            this.setSemester(semesterText[0]);
+            semester = (new MapBuilder(semesterText, IntegerUtil.parseIntegerArr(semesterVal)).build());
+        } catch (Exception e) {
+            alertDialog.show();
+        }
 
         filterSemesterButton = getView().findViewById(R.id.statisticFilter);
-        filterSemesterDialog = new FilterSemesterDialog();
-        filterSemesterDialog.setCallback(new CallbackListener() {
+        filterSemesterDialog = new FilterSemesterDialog(new CallbackListener() {
             @Override
             public void callback(String filter) {
                 setSemester(filter);
-                adapter.setSemester(semester.get(semesterText.getText()));
+                adapter.notifyDataSetChanged();
                 new BackgroundTask().execute();
             }
         });
 
-        statCredit = getView().findViewById(R.id.totalCredit);
-        semesterText = getView().findViewById(R.id.semesterText);
-        semesterText.setText(selectedSemester);
-
         courseListView = getView().findViewById(R.id.courseListView);
         courseList = new ArrayList<Course>();
-        adapter = new StatisticsCourseListAdapter(getContext(), courseList, semester.get(semesterText.getText()),this);
+        adapter = new StatisticsCourseListAdapter(getContext(), courseList,this);
         courseListView.setAdapter(adapter);
 
         filterSemesterButton.setOnClickListener(new View.OnClickListener() {
@@ -147,13 +185,12 @@ public class StatisticsFragment extends Fragment {
             }
         });
 
-        ProgressDialog progressDialog = new ProgressDialog(getActivity());
-        progressDialog.setMessage("Loading");
-        progressDialog.show();
+
         new BackgroundTask().execute();
-        progressDialog.dismiss();
-        progressDialog.hide();
         totalCredit = 0;
+
+        progress.dismiss();
+
     }
 
     // TODO: complete statistics fragment fetch by semester
@@ -162,7 +199,8 @@ public class StatisticsFragment extends Fragment {
         @Override
         protected void onPreExecute() {
             try {
-                filename = semester.get(semesterText.getText());
+                String v = semesterTextView.getText().toString();
+                filename = semester.get(semesterTextView.getText().toString()).toString();
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -195,8 +233,7 @@ public class StatisticsFragment extends Fragment {
 
     public void setSemester(String semester) {
         this.selectedSemester = semester;
-        this.semesterText.setText(selectedSemester);
-
+        this.semesterTextView.setText(selectedSemester);
     }
 
 }

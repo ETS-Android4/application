@@ -14,21 +14,21 @@ public final class Request {
         throw new UnsupportedOperationException();
     };
 
-    public static String[] queryTerm(String University) throws ConnectException {
+    public static int[] queryTerm() throws ConnectException {
         try {
-            String url = "http://ec2-3-238-0-205.compute-1.amazonaws.com/CourseTerm.php?courseUniversity="+ URLEncoder.encode(University,"UTF-8");
+            String url = "http://ec2-3-238-0-205.compute-1.amazonaws.com/CourseTerm.php";
             String result = HttpConnection.read(url);
             JSONObject jsonObject = new JSONObject(result);
             JSONArray jsonArray = jsonObject.getJSONArray("response");
 
-            String courseTerm;
+            int courseTerm;
 
             int count = 0;
-            String arr[] = new String[jsonArray.length()];
+            int arr[] = new int[jsonArray.length()];
 
             while(count < jsonArray.length()) {
                 JSONObject object = jsonArray.getJSONObject(count);
-                courseTerm = object.getString("courseTerm");
+                courseTerm = object.getInt("courseTerm");
                 arr[count] = courseTerm;
                 count++;
             }

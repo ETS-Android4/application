@@ -22,33 +22,27 @@ import android.widget.RadioGroup;
 import android.widget.Spinner;
 
 import com.gttime.android.component.Course;
-import com.gttime.android.component.CourseSeat;
+import com.gttime.android.component.CourseInfo;
 import com.gttime.android.component.Seat;
+import com.gttime.android.mapping.KeyValPair;
 import com.gttime.android.net.HttpConnection;
 import com.gttime.android.request.Request;
 import com.gttime.android.ui.adapter.CourseListAdapter;
 import com.gttime.android.R;
-import com.gttime.android.util.MapArray;
+import com.gttime.android.util.IntegerUtil;
+import com.gttime.android.util.MapBuilder;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.ConnectException;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
-import java.util.concurrent.FutureTask;
 
 
 /**
@@ -78,11 +72,14 @@ public class CourseFragment extends Fragment {
     private CourseListAdapter adapter;
 
     private String selectedUniversity;
-    private String selectedTerm;
+    private String selectedTermID;
     private String selectedArea;
 
-    private List<CourseSeat> courseSeats;
-    private MapArray<String, String> semester;
+    private List<CourseInfo> courseInfos;
+    private Map<String, Integer> semester;
+
+    private int[] semesterVal;
+    private String[] semesterText;
 
     private int universityID;
     private int termID;
@@ -174,7 +171,7 @@ public class CourseFragment extends Fragment {
 
 
         selectedUniversity = "";
-        selectedTerm = "";
+        selectedTermID = "";
         selectedArea = "";
 
         universityGroupID = getView().findViewById(R.id.universityGroupID);
@@ -191,14 +188,16 @@ public class CourseFragment extends Fragment {
                 selectedUniversity = gradeID.getText().toString();
                 progress.show();
                 try {
-                    Callable<String[]> task =  new Callable<String[]>() {
+                    Callable<int[]> task =  new Callable<int[]>() {
                         @Override
-                        public String[] call() throws Exception {
-                            return Request.queryTerm(selectedUniversity);
+                        public int[] call() throws Exception {
+                            return Request.queryTerm();
                         }
                     };
-                    Future<String[]> future = service.submit(task);
-                    termAdapter = new ArrayAdapter(getActivity(), android.R.layout.simple_spinner_dropdown_item, future.get());
+                    Future<int[]> future = service.submit(task);
+                    semesterVal = future.get();
+                    semesterText = KeyValPair.mapTerm(semesterVal);
+                    termAdapter = new ArrayAdapter(getActivity(), android.R.layout.simple_spinner_dropdown_item, semesterText);
                 } catch (Exception e) {
                     alertDialog.show();
                 }
@@ -213,13 +212,14 @@ public class CourseFragment extends Fragment {
 
                 progress.show();
 
-                selectedTerm = termSpinner.getSelectedItem().toString();
+                String selectedTerm = termSpinner.getSelectedItem().toString();
+                selectedTermID = String.valueOf(semester.get(selectedTerm));
 
                 try {
                     Callable<String[]> task = new Callable<String[]>() {
                         @Override
                         public String[] call() throws Exception {
-                            return Request.queryMajor(selectedUniversity, selectedTerm);
+                            return Request.queryMajor(selectedUniversity, selectedTermID);
                         }
                     };
                     Future<String[]> future = service.submit(task);
@@ -248,7 +248,7 @@ public class CourseFragment extends Fragment {
                 Callable<String[]> task = new Callable<String[]>() {
                     @Override
                     public String[] call() throws Exception {
-                        return Request.queryArea(selectedUniversity, selectedTerm, selectedArea);
+                        return Request.queryArea(selectedUniversity, selectedTermID, selectedArea);
                     }
                 };
                 Future<String[]> future = service.submit(task);
@@ -266,10 +266,24 @@ public class CourseFragment extends Fragment {
         }
     });
 
-    semester = new MapArray<String, String>(getResources().getStringArray(R.array.semesterText), getResources().getStringArray(R.array.semesterID));
+    Callable<int[]> task = new Callable<int[]>() {
+        @Override
+        public int[] call() throws Exception {
+            return Request.queryTerm();
+        }
+    };
+    Future<int[]> future = service.submit(task);
+    try {
+        semesterVal = future.get();
+        semesterText = KeyValPair.mapTerm(semesterVal);
+        semester = (new MapBuilder(semesterText, IntegerUtil.parseIntegerArr(semesterVal)).build());
+    } catch (Exception e) {
+        alertDialog.show();
+    }
+
     courseListView = getView().findViewById(R.id.courseListID);
-    courseSeats = new ArrayList<CourseSeat>();
-    adapter = new CourseListAdapter(getContext(), courseSeats, this);
+    courseInfos = new ArrayList<CourseInfo>();
+    adapter = new CourseListAdapter(getContext(), courseInfos, this);
     courseListView.setAdapter(adapter);
 
 
@@ -293,7 +307,7 @@ public class CourseFragment extends Fragment {
         protected void onPreExecute() {
             try {
                 target = "http://ec2-3-238-0-205.compute-1.amazonaws.com/CourseList.php?courseUniversity="+ URLEncoder.encode(selectedUniversity,"UTF-8")
-                        +"&courseTerm="+URLEncoder.encode(semester.get(termSpinner.getSelectedItem().toString()),"UTF-8")+"&courseMajor="+URLEncoder.encode(subjectSpinner.getSelectedItem().toString(),"UTF-8")
+                        +"&courseTerm="+URLEncoder.encode(String.valueOf(semester.get(termSpinner.getSelectedItem())),"UTF-8")+"&courseMajor="+URLEncoder.encode(subjectSpinner.getSelectedItem().toString(),"UTF-8")
                         +"&courseArea="+URLEncoder.encode(areaSpinner.getSelectedItem().toString(),"UTF-8");
             }
 
@@ -321,14 +335,14 @@ public class CourseFragment extends Fragment {
                     .create();
 
             try {
-                courseSeats.clear();
+                courseInfos.clear();
                 String result = (String) o;
                 JSONObject jsonObject = new JSONObject(result);
                 JSONArray jsonArray = jsonObject.getJSONArray("response");
 
                 int count = 0;
 
-                String courseTerm;
+                int courseTerm;
                 String courseMajor;
                 String courseTitle;
                 String courseCRN;
@@ -352,7 +366,7 @@ public class CourseFragment extends Fragment {
 
                 while(count < jsonArray.length()) {
                     JSONObject object = jsonArray.getJSONObject(count);
-                    courseTerm = object.getString("courseTerm");
+                    courseTerm = object.getInt("courseTerm");
                     courseMajor = object.getString("courseMajor");
                     courseTitle = object.getString("courseTitle");
                     courseCRN = object.getString("courseCRN");
@@ -376,14 +390,14 @@ public class CourseFragment extends Fragment {
 
                     Course course = new Course(courseTerm, courseDay, courseMajor, courseTitle, courseCRN, courseArea, courseSection, courseClass, courseTime, courseLocation, courseInstructor, courseUniversity, courseCredit, courseAttribute);
                     Seat seat = new Seat(seatCapacity, seatActual, seatRemaining, waitlistCapacity, waitlistActual, waitlistRemaining);
-                    courseSeats.add(new CourseSeat(course, seat));
+                    courseInfos.add(new CourseInfo(course, seat));
                     count++;
                 }
 
                 if(count == 0) {
                     alertDialog.show();
                 }
-                adapter.setSemester(semester.get(termSpinner.getSelectedItem().toString()));
+                adapter.setSemester(String.valueOf(semester.get(termSpinner.getSelectedItem())));
                 adapter.notifyDataSetChanged();
             }
             catch(Exception e) {

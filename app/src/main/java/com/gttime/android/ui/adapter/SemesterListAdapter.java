@@ -11,27 +11,29 @@ import com.gttime.android.R;
 import com.gttime.android.component.Semester;
 
 import java.util.List;
+import java.util.Map;
 
-public class SemesterListAdapter extends BaseAdapter {
+public class SemesterListAdapter <K,V> extends BaseAdapter {
     private Context context;
-    private List<Semester> semesterList;
-
+    private Map<K,V> semesterMap;
     private int selected;
+    private Object[] keyset;
     private CallbackListener callbackListner;
 
-    public SemesterListAdapter(Context context, List<Semester> semesterList, int selected) {
+    public SemesterListAdapter(Context context, Map<K,V> semesterMap, int selected) {
         this.context = context;
-        this.semesterList = semesterList;
+        this.semesterMap = semesterMap;
         this.selected = selected;
+        this.keyset = semesterMap.keySet().toArray();
     }
     @Override
     public int getCount() {
-        return semesterList.size();
+        return semesterMap.size();
     }
 
     @Override
     public Object getItem(int position) {
-        return semesterList.get(position);
+        return semesterMap.get(keyset[position]);
     }
 
     @Override
@@ -48,7 +50,7 @@ public class SemesterListAdapter extends BaseAdapter {
     public View getView(final int position, View convertView, ViewGroup parent) {
         View v =  View.inflate(context, R.layout.semester,null);
         final RadioButton semesterButton = v.findViewById(R.id.semesterID); // TODO: Make it settable only one selection
-        semesterButton.setText(semesterList.get(position).getSemesterText()); // TODO: change it to semester text
+        semesterButton.setText(semesterMap.get(keyset[position]).toString()); // TODO: change it to semester text
 
         if (selected == position) semesterButton.setChecked(true);
         else {semesterButton.setChecked(false);}
@@ -57,11 +59,11 @@ public class SemesterListAdapter extends BaseAdapter {
             public void onClick(View v) {
                 setSelected(position);
                 SemesterListAdapter.this.notifyDataSetChanged();
-                callbackListner.callback(semesterList.get(position).getSemesterText()); // HACK
+                callbackListner.callback(semesterMap.get(keyset[position]).toString()); // HACK
             }
         });
 
-        v.setTag(semesterList.get(position).getSemesterText());
+        v.setTag(semesterMap.get(keyset[position]).toString());
         return v;
     }
 

@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name = "colorPrimary">#FFF7F69E</color>
     <color name = "colorPrimaryWeak">#FFFFB1</color>
 
     <color name = "colorWarning">#000000</color>

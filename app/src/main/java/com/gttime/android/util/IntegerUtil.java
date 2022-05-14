@@ -5,7 +5,7 @@ public final class IntegerUtil {
         throw new UnsupportedOperationException();
     }
 
-    public static int parseInt(java.lang.String strNum) {
+    public static int parseInt(String strNum) {
         int returnVal = 0;
         if (strNum == null) {
             return returnVal;
@@ -18,5 +18,13 @@ public final class IntegerUtil {
         }
 
         return returnVal;
+    }
+
+    public static Integer[] parseIntegerArr(int[] num) {
+        Integer[] IntegerArr = new Integer[num.length];
+        for(int i=0; i<num.length; i++) {
+            IntegerArr[i] = new Integer(num[i]);
+        }
+        return IntegerArr;
     }
 }

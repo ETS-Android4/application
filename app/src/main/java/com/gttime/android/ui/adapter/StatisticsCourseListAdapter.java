@@ -10,6 +10,7 @@ import android.widget.TextView;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
+import com.gttime.android.CallbackListener;
 import com.gttime.android.component.Course;
 import com.gttime.android.R;
 import com.gttime.android.ui.fragment.StatisticsFragment;
@@ -24,13 +25,11 @@ public class StatisticsCourseListAdapter extends BaseAdapter {
     private Context context;
     private List<Course> courseScheduleList;
     private Fragment parent;
-    private String semesterID;
 
-    public StatisticsCourseListAdapter(Context context, List<Course> courseScheduleList, String semesterID, Fragment parent) {
+    public StatisticsCourseListAdapter(Context context, List<Course> courseScheduleList, Fragment parent) {
         this.context = context;
         this.courseScheduleList = courseScheduleList;
         this.parent = parent;
-        this.semesterID = semesterID;
     }
 
     @Override
@@ -72,6 +71,7 @@ public class StatisticsCourseListAdapter extends BaseAdapter {
 
                 try
                     {
+                        String semesterID = Integer.toString(courseScheduleList.get(position).getCourseTerm());
                         boolean success = JSONUtil.deleteCourse(new File(parent.getActivity().getFilesDir(), IOUtil.getFileName(semesterID)), courseScheduleList.get(position));
                         if(success)
                         {
@@ -105,7 +105,5 @@ public class StatisticsCourseListAdapter extends BaseAdapter {
                 });
         return v;
     }
-
-    public void setSemester(String semesterID) {this.semesterID = semesterID;}
 }
 

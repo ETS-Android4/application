@@ -33,23 +33,23 @@ public final class JSONUtil {
             }
 
             int index = 0;
-            java.lang.String courseTerm;
-            java.lang.String courseTitle;
-            java.lang.String courseTime;
-            java.lang.String courseDay;
-            java.lang.String courseLocation;
-            java.lang.String courseInstructor;
-            java.lang.String courseCRN;
-            java.lang.String courseCredit;
-            java.lang.String courseMajor;
-            java.lang.String courseArea;
-            java.lang.String courseSection;
-            java.lang.String courseClass;
-            java.lang.String courseUniversity;
-            java.lang.String courseAttribute;
+            int courseTerm;
+            String courseTitle;
+            String courseTime;
+            String courseDay;
+            String courseLocation;
+            String courseInstructor;
+            String courseCRN;
+            String courseCredit;
+            String courseMajor;
+            String courseArea;
+            String courseSection;
+            String courseClass;
+            String courseUniversity;
+            String courseAttribute;
             while(index < jsonResponse.length()) {
                 JSONObject object = jsonResponse.getJSONObject(index);
-                courseTerm = object.getString("courseTerm");
+                courseTerm = object.getInt("courseTerm");
                 courseTitle = object.getString("courseTitle");
                 courseTime = object.getString("courseTime");
                 courseDay = object.getString("courseDay");
@@ -133,20 +133,20 @@ public final class JSONUtil {
 
             JSONObject jsonObject = new JSONObject();
 
-            java.lang.String courseTerm = course.getCourseTerm();
-            java.lang.String courseTitle = course.getCourseTitle();
-            java.lang.String courseTime = course.getCourseTime();
-            java.lang.String courseDay = course.getCourseDay();
-            java.lang.String courseLocation = course.getCourseLocation();
-            java.lang.String courseInstructor = course.getCourseInstructor();
-            java.lang.String courseCRN = course.getCourseCRN();
-            java.lang.String courseCredit = course.getCourseCredit();
-            java.lang.String courseMajor = course.getCourseMajor();
-            java.lang.String courseArea = course.getCourseArea();
-            java.lang.String courseSection = course.getCourseSection();
-            java.lang.String courseClass = course.getCourseClass();
-            java.lang.String courseUniversity = course.getCourseUniversity();
-            java.lang.String courseAttribute = course.getCourseAttribute();
+            int courseTerm = course.getCourseTerm();
+            String courseTitle = course.getCourseTitle();
+            String courseTime = course.getCourseTime();
+            String courseDay = course.getCourseDay();
+            String courseLocation = course.getCourseLocation();
+            String courseInstructor = course.getCourseInstructor();
+            String courseCRN = course.getCourseCRN();
+            String courseCredit = course.getCourseCredit();
+            String courseMajor = course.getCourseMajor();
+            String courseArea = course.getCourseArea();
+            String courseSection = course.getCourseSection();
+            String courseClass = course.getCourseClass();
+            String courseUniversity = course.getCourseUniversity();
+            String courseAttribute = course.getCourseAttribute();
 
             jsonObject.put("courseTerm", courseTerm);
             jsonObject.put("courseTitle", courseTitle);
@@ -205,20 +205,20 @@ public final class JSONUtil {
 
             // TODO : remove course from json
 
-            java.lang.String courseTerm = course.getCourseTerm();
-            java.lang.String courseTitle = course.getCourseTitle();
-            java.lang.String courseTime = course.getCourseTime();
-            java.lang.String courseDay = course.getCourseDay();
-            java.lang.String courseLocation = course.getCourseLocation();
-            java.lang.String courseInstructor = course.getCourseInstructor();
-            java.lang.String courseCRN = course.getCourseCRN();
-            java.lang.String courseCredit = course.getCourseCredit();
-            java.lang.String courseMajor = course.getCourseMajor();
-            java.lang.String courseArea = course.getCourseArea();
-            java.lang.String courseSection = course.getCourseSection();
-            java.lang.String courseClass = course.getCourseClass();
-            java.lang.String courseUniversity = course.getCourseUniversity();
-            java.lang.String courseAttribute = course.getCourseAttribute();
+            int courseTerm = course.getCourseTerm();
+            String courseTitle = course.getCourseTitle();
+            String courseTime = course.getCourseTime();
+            String courseDay = course.getCourseDay();
+            String courseLocation = course.getCourseLocation();
+            String courseInstructor = course.getCourseInstructor();
+            String courseCRN = course.getCourseCRN();
+            String courseCredit = course.getCourseCredit();
+            String courseMajor = course.getCourseMajor();
+            String courseArea = course.getCourseArea();
+            String courseSection = course.getCourseSection();
+            String courseClass = course.getCourseClass();
+            String courseUniversity = course.getCourseUniversity();
+            String courseAttribute = course.getCourseAttribute();
 
             JSONArray updatedJsonArray = new JSONArray();
             for (int i =0; i<jsonArray.length(); i++) {

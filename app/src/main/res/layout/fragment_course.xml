@@ -30,8 +30,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Graduate"
-                android:id="@+id/graduateID"/>
+                android:text="Graduate" />
         </RadioGroup>
 
         <LinearLayout
@@ -54,6 +53,7 @@
                 android:layout_marginTop="10dp"
                 android:orientation="horizontal"
                 android:id="@+id/subjectID"/>
+
         </LinearLayout>
 
         <LinearLayout

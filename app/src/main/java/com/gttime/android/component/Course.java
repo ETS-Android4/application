@@ -4,24 +4,24 @@ import com.gttime.android.util.StringUtil;
 import com.github.tlaabs.timetableview.Time;
 
 public class Course {
-    private String courseTerm;
-    private String courseDay;
-    private String courseMajor;
-    private String courseTitle;
-    private String courseCRN;
-    private String courseArea;
-    private String courseSection;
-    private String courseClass;
-    private String courseTime;
+    private int courseTerm;
+    private java.lang.String courseDay;
+    private java.lang.String courseMajor;
+    private java.lang.String courseTitle;
+    private java.lang.String courseCRN;
+    private java.lang.String courseArea;
+    private java.lang.String courseSection;
+    private java.lang.String courseClass;
+    private java.lang.String courseTime;
     private Time startTime;
     private Time endTime;
-    private String courseLocation;
-    private String courseInstructor;
-    private String courseUniversity;
-    private String courseCredit;
-    private String courseAttribute;
+    private java.lang.String courseLocation;
+    private java.lang.String courseInstructor;
+    private java.lang.String courseUniversity;
+    private java.lang.String courseCredit;
+    private java.lang.String courseAttribute;
 
-    public Course(String courseTerm, String courseDay, String courseMajor, String courseTitle, String courseCRN, String courseArea, String courseSection, String courseClass, String courseTime, String courseLocation, String courseInstructor, String courseUniversity, String courseCredit, String courseAttribute) {
+    public Course(int courseTerm, java.lang.String courseDay, java.lang.String courseMajor, java.lang.String courseTitle, java.lang.String courseCRN, java.lang.String courseArea, java.lang.String courseSection, java.lang.String courseClass, java.lang.String courseTime, java.lang.String courseLocation, java.lang.String courseInstructor, java.lang.String courseUniversity, java.lang.String courseCredit, java.lang.String courseAttribute) {
         this.courseTerm = courseTerm;
         this.courseDay = courseDay;
         this.courseMajor = courseMajor;
@@ -40,107 +40,107 @@ public class Course {
         this.courseAttribute = courseAttribute;
     }
 
-    public String getCourseTerm() {
+    public int getCourseTerm() {
         return courseTerm;
     }
 
-    public void setCourseTerm(String courseTerm) {
+    public void setCourseTerm(int courseTerm) {
         this.courseTerm = courseTerm;
     }
 
-    public String getCourseDay() {
+    public java.lang.String getCourseDay() {
         return courseDay;
     }
 
-    public void setCourseDay(String courseDay) {
+    public void setCourseDay(java.lang.String courseDay) {
         this.courseDay = courseDay;
     }
 
-    public String getCourseMajor() {
+    public java.lang.String getCourseMajor() {
         return courseMajor;
     }
 
-    public void setCourseMajor(String courseMajor) {
+    public void setCourseMajor(java.lang.String courseMajor) {
         this.courseMajor = courseMajor;
     }
 
-    public String getCourseTitle() {
+    public java.lang.String getCourseTitle() {
         return courseTitle;
     }
 
-    public void setCourseTitle(String courseTitle) {
+    public void setCourseTitle(java.lang.String courseTitle) {
         this.courseTitle = courseTitle;
     }
 
-    public String getCourseCRN() {
+    public java.lang.String getCourseCRN() {
         return courseCRN;
     }
 
-    public void setCourseCRN(String courseCRN) {
+    public void setCourseCRN(java.lang.String courseCRN) {
         this.courseCRN = courseCRN;
     }
 
-    public String getCourseArea() {
+    public java.lang.String getCourseArea() {
         return courseArea;
     }
 
-    public void setCourseArea(String courseArea) {
+    public void setCourseArea(java.lang.String courseArea) {
         this.courseArea = courseArea;
     }
 
-    public String getCourseSection() {
+    public java.lang.String getCourseSection() {
         return courseSection;
     }
 
-    public void setCourseSection(String courseSection) {
+    public void setCourseSection(java.lang.String courseSection) {
         this.courseSection = courseSection;
     }
 
-    public String getCourseClass() {
+    public java.lang.String getCourseClass() {
         return courseClass;
     }
 
-    public void setCourseClass(String courseClass) {
+    public void setCourseClass(java.lang.String courseClass) {
         this.courseClass = courseClass;
     }
 
-    public String getCourseLocation() {
+    public java.lang.String getCourseLocation() {
         return courseLocation;
     }
 
-    public void setCourseLocation(String courseLocation) {
+    public void setCourseLocation(java.lang.String courseLocation) {
         this.courseLocation = courseLocation;
     }
 
-    public String getCourseInstructor() {
+    public java.lang.String getCourseInstructor() {
         return courseInstructor;
     }
 
-    public void setCourseInstructor(String courseInstructor) {
+    public void setCourseInstructor(java.lang.String courseInstructor) {
         this.courseInstructor = courseInstructor;
     }
 
-    public String getCourseUniversity() {
+    public java.lang.String getCourseUniversity() {
         return courseUniversity;
     }
 
-    public void setCourseUniversity(String courseUniversity) {
+    public void setCourseUniversity(java.lang.String courseUniversity) {
         this.courseUniversity = courseUniversity;
     }
 
-    public String getCourseCredit() {
+    public java.lang.String getCourseCredit() {
         return courseCredit;
     }
 
-    public void setCourseCredit(String courseCredit) {
+    public void setCourseCredit(java.lang.String courseCredit) {
         this.courseCredit = courseCredit;
     }
 
-    public String getCourseAttribute() {
+    public java.lang.String getCourseAttribute() {
         return courseAttribute;
     }
 
-    public void setCourseAttribute(String courseAttribute) {
+    public void setCourseAttribute(java.lang.String courseAttribute) {
         this.courseAttribute = courseAttribute;
     }
 
@@ -160,11 +160,11 @@ public class Course {
         this.endTime = endTime;
     }
 
-    public String getCourseTime() {
+    public java.lang.String getCourseTime() {
         return courseTime;
     }
 
-    public void setCourseTime(String courseTime) {
+    public void setCourseTime(java.lang.String courseTime) {
         this.courseTime = courseTime;
     }
 

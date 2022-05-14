@@ -83,7 +83,6 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/statisticFilterLayout"
         app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior" />
 
 </LinearLayout>
