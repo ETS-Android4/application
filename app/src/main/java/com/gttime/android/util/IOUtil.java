@@ -5,7 +5,7 @@ public final class IOUtil {
         throw new UnsupportedOperationException();
     }
 
-    public static java.lang.String getFileName(java.lang.String filename) {
+    public static String getFileName(String filename) {
         return filename + ".json";
     }
 }

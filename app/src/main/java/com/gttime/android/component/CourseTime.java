@@ -25,7 +25,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class CourseTime extends Time{
-    CourseTime(java.lang.String time) {
+    CourseTime(String time) {
         HashMap.Entry parsed = this.parse(time);
 
         int hour = (int)parsed.getKey();
@@ -40,14 +40,14 @@ public class CourseTime extends Time{
      * @param time in String
      *        ex: 6:30 pm
      */
-    public Map.Entry parse(java.lang.String time) {
+    public Map.Entry parse(String time) {
         time = time.trim();
-        java.lang.String[] pair = StringUtil.split(time," ", 2);
+        String[] pair = StringUtil.split(time," ", 2);
 
-        java.lang.String hourMin = pair[0];
-        java.lang.String timeFrame = pair[1];
+        String hourMin = pair[0];
+        String timeFrame = pair[1];
 
-        java.lang.String[] hourMinPair = StringUtil.split(hourMin,":", 2);
+        String[] hourMinPair = StringUtil.split(hourMin,":", 2);
 
         int hour = 0;
         int min = 0;

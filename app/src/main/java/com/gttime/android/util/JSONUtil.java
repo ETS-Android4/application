@@ -15,13 +15,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public final class JSONUtil {
-    public static List<Course> fetchCourse(java.lang.String json) {
+    public static List<Course> fetchCourse(String json) {
         List<Course> list = new ArrayList<Course>();
 
         if (json.isEmpty()) return list;
 
         try {
-            java.lang.String result = (java.lang.String) json;
+            String result = (String) json;
             JSONObject jsonObject = new JSONObject(result);
 
             JSONArray jsonResponse;
@@ -75,19 +75,19 @@ public final class JSONUtil {
         return list;
     }
 
-    public static java.lang.String readJson(File file) {
+    public static String readJson(File file) {
         try {
             file.createNewFile(); // if file already exists will do nothing
             FileReader fileReader = new FileReader(file);
             BufferedReader bufferedReader = new BufferedReader(fileReader);
             StringBuilder stringBuilder = new StringBuilder();
-            java.lang.String line = bufferedReader.readLine();
+            String line = bufferedReader.readLine();
             while (line != null){
                 stringBuilder.append(line).append("\n");
                 line = bufferedReader.readLine();
             }
             bufferedReader.close();
-            java.lang.String response = stringBuilder.toString();
+            String response = stringBuilder.toString();
             return response;
         }
         catch(IOException io) {
@@ -110,8 +110,8 @@ public final class JSONUtil {
 
     public static boolean appendCourse(File file, Course course) {
         try {
-            java.lang.String json = readJson(file);
-            java.lang.String response = (java.lang.String) json;
+            String json = readJson(file);
+            String response = (String) json;
 
             // HACK
             JSONObject jsonFile;
@@ -168,7 +168,7 @@ public final class JSONUtil {
             JSONObject updatedJson = new JSONObject();
             updatedJson.put("courses", jsonArray);
 
-            java.lang.String jsonString = updatedJson.toString();
+            String jsonString = updatedJson.toString();
 
             FileWriter fileWriter = new FileWriter(file);
             BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
@@ -184,7 +184,7 @@ public final class JSONUtil {
 
     public static boolean deleteCourse(File file, Course course) {
         try {
-            java.lang.String response = readJson(file);
+            String response = readJson(file);
 
             // HACK
             JSONObject jsonFile;
@@ -222,7 +222,7 @@ public final class JSONUtil {
 
             JSONArray updatedJsonArray = new JSONArray();
             for (int i =0; i<jsonArray.length(); i++) {
-                java.lang.String elem = jsonArray.getString(i);
+                String elem = jsonArray.getString(i);
 
                 if (elem.contains(courseCRN)) continue;
                 updatedJsonArray.put(jsonArray.get(i));
@@ -231,7 +231,7 @@ public final class JSONUtil {
             JSONObject updatedJson = new JSONObject();
             updatedJson.put("courses", updatedJsonArray);
 
-            java.lang.String jsonString = updatedJson.toString();
+            String jsonString = updatedJson.toString();
 
             FileWriter fileWriter = new FileWriter(file);
             BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);

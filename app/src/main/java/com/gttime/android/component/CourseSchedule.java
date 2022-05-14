@@ -36,7 +36,7 @@ public class CourseSchedule extends Schedule {
         super();
     }
 
-    public CourseSchedule(java.lang.String courseTitle, java.lang.String courseInstructor, java.lang.String courseLocation, java.lang.String courseTime, char courseDay) {
+    public CourseSchedule(String courseTitle, String courseInstructor, String courseLocation, String courseTime, char courseDay) {
         this.parseTimedTime = new HashMap<Integer, Integer>();
         setDay(courseDay);
         setClassTitle(courseTitle);
@@ -71,7 +71,7 @@ public class CourseSchedule extends Schedule {
         }
     }
 
-    public java.lang.String parseDay(int day) {
+    public String parseDay(int day) {
         char parsed = ' ';
         switch(day) {
             case 0 :
@@ -101,7 +101,7 @@ public class CourseSchedule extends Schedule {
      *  Additional variable setter & getter functions
      */
 
-    public java.lang.String getCourseTime() {
+    public String getCourseTime() {
         return getStartTime() + " : " + getEndTime();
     }
 }
