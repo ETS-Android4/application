@@ -9,8 +9,8 @@ android {
         applicationId "com.gttime.android"
         minSdkVersion 21
         targetSdkVersion 30
-        versionCode 9
-        versionName "1.9.1.21354"
+        versionCode 11
+        versionName "2.1.6.22134" // 1+(versioncode/10).(versioncode%10).NumCommit.Year+DayNum
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
