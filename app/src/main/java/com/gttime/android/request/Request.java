@@ -1,6 +1,5 @@
 package com.gttime.android.request;
 
-import com.gttime.android.CallbackListener;
 import com.gttime.android.net.HttpConnection;
 
 import org.json.JSONArray;

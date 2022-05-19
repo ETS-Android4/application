@@ -1,4 +1,4 @@
-package com.gttime.android;
+package com.gttime.android.view.effect;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -11,7 +11,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.gttime.android.R;
-import com.gttime.android.ui.activity.MainActivity;
+import com.gttime.android.view.activity.MainActivity;
 
 
 public class Splashscreen extends Activity {

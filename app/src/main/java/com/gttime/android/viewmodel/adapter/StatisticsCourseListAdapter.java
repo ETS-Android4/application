@@ -1,4 +1,4 @@
-package com.gttime.android.ui.adapter;
+package com.gttime.android.viewmodel.adapter;
 
 import android.content.Context;
 import android.view.View;
@@ -10,10 +10,9 @@ import android.widget.TextView;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
-import com.gttime.android.CallbackListener;
 import com.gttime.android.component.Course;
 import com.gttime.android.R;
-import com.gttime.android.ui.fragment.StatisticsFragment;
+import com.gttime.android.view.fragment.StatisticsFragment;
 import com.gttime.android.util.IOUtil;
 import com.gttime.android.util.IntegerUtil;
 import com.gttime.android.util.JSONUtil;

@@ -1,4 +1,4 @@
-package com.gttime.android.ui.adapter;
+package com.gttime.android.viewmodel.adapter;
 
 import android.content.Context;
 import android.view.View;
@@ -6,11 +6,9 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.RadioButton;
 
-import com.gttime.android.CallbackListener;
+import com.gttime.android.util.CallbackListener;
 import com.gttime.android.R;
-import com.gttime.android.component.Semester;
 
-import java.util.List;
 import java.util.Map;
 
 public class SemesterListAdapter <K,V> extends BaseAdapter {

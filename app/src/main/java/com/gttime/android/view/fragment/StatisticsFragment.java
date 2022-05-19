@@ -1,4 +1,4 @@
-package com.gttime.android.ui.fragment;
+package com.gttime.android.view.fragment;
 
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
@@ -17,13 +17,13 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.gttime.android.CallbackListener;
+import com.gttime.android.util.CallbackListener;
 import com.gttime.android.component.Course;
 import com.gttime.android.mapping.KeyValPair;
 import com.gttime.android.request.Request;
-import com.gttime.android.ui.dialog.FilterSemesterDialog;
+import com.gttime.android.view.dialog.FilterSemesterDialog;
 import com.gttime.android.R;
-import com.gttime.android.ui.adapter.StatisticsCourseListAdapter;
+import com.gttime.android.viewmodel.adapter.StatisticsCourseListAdapter;
 import com.gttime.android.util.IOUtil;
 import com.gttime.android.util.IntegerUtil;
 import com.gttime.android.util.JSONUtil;

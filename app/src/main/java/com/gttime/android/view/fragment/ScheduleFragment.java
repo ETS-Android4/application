@@ -1,4 +1,4 @@
-package com.gttime.android.ui.fragment;
+package com.gttime.android.view.fragment;
 
 import android.app.ProgressDialog;
 import android.os.AsyncTask;
@@ -11,14 +11,12 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ListView;
 
 import com.gttime.android.component.Course;
 import com.gttime.android.component.CourseSchedule;
 import com.gttime.android.R;
 import com.gttime.android.mapping.KeyValPair;
 import com.gttime.android.request.Request;
-import com.gttime.android.ui.adapter.SemesterListAdapter;
 import com.gttime.android.util.IOUtil;
 import com.gttime.android.util.IntegerUtil;
 import com.gttime.android.util.JSONUtil;

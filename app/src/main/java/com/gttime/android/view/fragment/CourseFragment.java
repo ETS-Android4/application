@@ -1,4 +1,4 @@
-package com.gttime.android.ui.fragment;
+package com.gttime.android.view.fragment;
 
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
@@ -27,7 +27,7 @@ import com.gttime.android.component.Seat;
 import com.gttime.android.mapping.KeyValPair;
 import com.gttime.android.net.HttpConnection;
 import com.gttime.android.request.Request;
-import com.gttime.android.ui.adapter.CourseListAdapter;
+import com.gttime.android.viewmodel.adapter.CourseListAdapter;
 import com.gttime.android.R;
 import com.gttime.android.util.IntegerUtil;
 import com.gttime.android.util.MapBuilder;

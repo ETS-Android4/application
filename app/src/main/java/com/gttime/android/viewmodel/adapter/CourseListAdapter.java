@@ -1,4 +1,4 @@
-package com.gttime.android.ui.adapter;
+package com.gttime.android.viewmodel.adapter;
 
 import android.content.Context;
 import android.os.AsyncTask;
@@ -15,7 +15,7 @@ import androidx.fragment.app.Fragment;
 import com.gttime.android.component.Course;
 import com.gttime.android.R;
 import com.gttime.android.component.CourseInfo;
-import com.gttime.android.ui.activity.MainActivity;
+import com.gttime.android.view.activity.MainActivity;
 import com.gttime.android.util.IOUtil;
 import com.gttime.android.util.IntegerUtil;
 import com.gttime.android.util.JSONUtil;

@@ -1,4 +1,4 @@
-package com.gttime.android.ui.fragment;
+package com.gttime.android.view.fragment;
 
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -16,7 +16,7 @@ import androidx.fragment.app.Fragment;
 
 import com.google.android.gms.oss.licenses.OssLicensesMenuActivity;
 import com.gttime.android.component.Announcement;
-import com.gttime.android.ui.adapter.AnnouncementListAdapter;
+import com.gttime.android.viewmodel.adapter.AnnouncementListAdapter;
 import com.gttime.android.R;
 
 import org.json.JSONArray;

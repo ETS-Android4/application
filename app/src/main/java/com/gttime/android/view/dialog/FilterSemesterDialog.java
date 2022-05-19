@@ -1,6 +1,5 @@
-package com.gttime.android.ui.dialog;
+package com.gttime.android.view.dialog;
 
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,21 +8,16 @@ import android.widget.ListView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
 
-import com.gttime.android.CallbackListener;
+import com.gttime.android.util.CallbackListener;
 import com.gttime.android.R;
-import com.gttime.android.component.Semester;
 import com.gttime.android.mapping.KeyValPair;
 import com.gttime.android.request.Request;
-import com.gttime.android.ui.adapter.SemesterListAdapter;
+import com.gttime.android.viewmodel.adapter.SemesterListAdapter;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
-import com.gttime.android.ui.fragment.StatisticsFragment;
 import com.gttime.android.util.IntegerUtil;
 import com.gttime.android.util.MapBuilder;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;

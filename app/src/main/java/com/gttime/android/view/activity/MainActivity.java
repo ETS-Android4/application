@@ -1,4 +1,4 @@
-package com.gttime.android.ui.activity;
+package com.gttime.android.view.activity;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -7,11 +7,11 @@ import androidx.fragment.app.Fragment;
 import android.os.Bundle;
 import android.view.MenuItem;
 
-import com.gttime.android.ui.fragment.MainFragment;
-import com.gttime.android.ui.fragment.CourseFragment;
+import com.gttime.android.view.fragment.MainFragment;
+import com.gttime.android.view.fragment.CourseFragment;
 import com.gttime.android.R;
-import com.gttime.android.ui.fragment.ScheduleFragment;
-import com.gttime.android.ui.fragment.StatisticsFragment;
+import com.gttime.android.view.fragment.ScheduleFragment;
+import com.gttime.android.view.fragment.StatisticsFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class MainActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener{

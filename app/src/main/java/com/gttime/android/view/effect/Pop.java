@@ -1,4 +1,4 @@
-package com.gttime.android;
+package com.gttime.android.view.effect;
 
 import android.app.Activity;
 import android.os.Bundle;

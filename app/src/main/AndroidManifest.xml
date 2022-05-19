@@ -12,7 +12,7 @@
         android:roundIcon="@drawable/app_logo_main"
         android:supportsRtl="true"
         android:theme="@style/Theme">
-        <activity android:name = ".ui.activity.MainActivity"
+        <activity android:name = ".view.activity.MainActivity"
             android:label = "GT Time">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -20,7 +20,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name = ".Pop"
+        <activity android:name = ".view.effect.Pop"
             android:theme = "@style/Custom.App.Pop"></activity>
     </application>
 

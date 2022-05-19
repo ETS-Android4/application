@@ -1,4 +1,4 @@
-package com.gttime.android.ui.adapter;
+package com.gttime.android.viewmodel.adapter;
 
 import android.content.Context;
 import android.view.View;
