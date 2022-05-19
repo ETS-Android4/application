@@ -49,8 +49,8 @@ public class SemesterListAdapter <K,V> extends BaseAdapter {
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
         View v =  View.inflate(context, R.layout.semester,null);
-        final RadioButton semesterButton = v.findViewById(R.id.semesterID); // TODO: Make it settable only one selection
-        semesterButton.setText(semesterMap.get(keyset[position]).toString()); // TODO: change it to semester text
+        final RadioButton semesterButton = v.findViewById(R.id.semesterID);
+        semesterButton.setText(semesterMap.get(keyset[position]).toString());
 
         if (selected == position) semesterButton.setChecked(true);
         else {semesterButton.setChecked(false);}

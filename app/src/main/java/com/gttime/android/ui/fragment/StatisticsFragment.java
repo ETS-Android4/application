@@ -50,7 +50,7 @@ public class StatisticsFragment extends Fragment {
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
-    // TODO: Rename and change types of parameters
+
     private String mParam1;
     private String mParam2;
 
@@ -83,7 +83,7 @@ public class StatisticsFragment extends Fragment {
      * @param param2 Parameter 2.
      * @return A new instance of fragment StatisticsFragment.
      */
-    // TODO: Rename and change types and number of parameters
+
     public static StatisticsFragment newInstance(String param1, String param2) {
         StatisticsFragment fragment = new StatisticsFragment();
         Bundle args = new Bundle();
@@ -93,6 +93,7 @@ public class StatisticsFragment extends Fragment {
         return fragment;
     }
 
+    // TODO: Use savedInstanceState to load configs
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -146,6 +147,9 @@ public class StatisticsFragment extends Fragment {
         semesterTextView = getView().findViewById(R.id.semesterText);
         semesterTextView.setText(selectedSemester);
 
+        this.semesterVal = new int[0];
+        this.semesterText = new String[0];
+
         try {
             Callable<int[]> task =  new Callable<int[]>() {
                 @Override
@@ -157,14 +161,16 @@ public class StatisticsFragment extends Fragment {
             Future<int[]> future = service.submit(task);
             this.semesterVal = future.get();
             this.semesterText = KeyValPair.mapTerm(semesterVal);
-            this.setSemester(semesterText[0]);
-            semester = (new MapBuilder(semesterText, IntegerUtil.parseIntegerArr(semesterVal)).build());
         } catch (Exception e) {
             alertDialog.show();
         }
 
+        selectedSemester = selectedSemester == null? semesterText[0]:selectedSemester;
+        this.setSemester(this.selectedSemester);
+        semester = (new MapBuilder(semesterText, IntegerUtil.parseIntegerArr(semesterVal)).build());
+
         filterSemesterButton = getView().findViewById(R.id.statisticFilter);
-        filterSemesterDialog = new FilterSemesterDialog(new CallbackListener<String>() {
+        filterSemesterDialog = new FilterSemesterDialog(semester.get(selectedSemester), new CallbackListener<String>() {
             @Override
             public void callback(String param) {
                 setSemester(param);
@@ -193,7 +199,7 @@ public class StatisticsFragment extends Fragment {
 
     }
 
-    // TODO: complete statistics fragment fetch by semester
+
     class BackgroundTask extends AsyncTask {
         String filename;
         @Override

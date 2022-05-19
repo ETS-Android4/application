@@ -51,12 +51,11 @@ import java.util.concurrent.Future;
  * create an instance of this fragment.
  */
 public class CourseFragment extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
+    // TODO: Figure out what these params mean
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
-    // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
 
@@ -71,16 +70,18 @@ public class CourseFragment extends Fragment {
     private ListView courseListView;
     private CourseListAdapter adapter;
 
-    private String selectedUniversity;
-    private String selectedTermID;
-    private String selectedArea;
-
     private List<CourseInfo> courseInfos;
     private Map<String, Integer> semester;
 
     private int[] semesterVal;
     private String[] semesterText;
 
+    // container variables for database query
+    private String selectedUniversity;
+    private String selectedTermID;
+    private String selectedArea;
+
+    // container variables for id store
     private int universityID;
     private int termID;
     private int areaID;
@@ -98,7 +99,6 @@ public class CourseFragment extends Fragment {
      * @param param2 Parameter 2.
      * @return A new instance of fragment CourseFragment.
      */
-    // TODO: Rename and change types and number of parameters
     public static CourseFragment newInstance(String param1, String param2) {
         CourseFragment fragment = new CourseFragment();
         Bundle args = new Bundle();
@@ -108,6 +108,7 @@ public class CourseFragment extends Fragment {
         return fragment;
     }
 
+    // TODO: Use savedInstanceState to load configs
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -118,17 +119,17 @@ public class CourseFragment extends Fragment {
         }
 
         if(savedInstanceState != null) {
-            this.universityID = savedInstanceState.getInt("universityID");
-            this.subjectID = savedInstanceState.getInt("subjectID");
-            this.termID = savedInstanceState.getInt("termID");
-            this.areaID = savedInstanceState.getInt("areaID");
+            universityID = savedInstanceState.getInt("universityID");
+            subjectID = savedInstanceState.getInt("subjectID");
+            termID = savedInstanceState.getInt("termID");
+            areaID = savedInstanceState.getInt("areaID");
         }
 
         else {
-            this.universityID = R.id.undergraduateID;
-            this.subjectID = 0;
-            this.termID = 0;
-            this.areaID = 0;
+            universityID = 0;
+            subjectID = 0;
+            termID = 0;
+            areaID = 0;
         }
     }
 
@@ -151,7 +152,6 @@ public class CourseFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        // TODO: Update info from database
         final ProgressDialog progress = new ProgressDialog(getActivity());
         progress.setMessage("Wait while loading...");
         progress.setTitle("Loading");
@@ -169,11 +169,6 @@ public class CourseFragment extends Fragment {
                 })
                 .create();
 
-
-        selectedUniversity = "";
-        selectedTermID = "";
-        selectedArea = "";
-
         universityGroupID = getView().findViewById(R.id.universityGroupID);
         termSpinner = getView().findViewById(R.id.semesterID);
         subjectSpinner = getView().findViewById(R.id.subjectID);
@@ -184,6 +179,7 @@ public class CourseFragment extends Fragment {
             public void onCheckedChanged(RadioGroup group, int checkedId) {
                 final RadioButton gradeID = getView().findViewById(checkedId);
                 selectedUniversity = gradeID.getText().toString();
+                universityID = universityGroupID.getCheckedRadioButtonId();
                 progress.show();
                 try {
                     // TODO: Figure out way to call Request.ExecuteQuery with primitives
@@ -202,6 +198,7 @@ public class CourseFragment extends Fragment {
                     alertDialog.show();
                 }
                 termSpinner.setAdapter(termAdapter);
+                termSpinner.setSelection(termID);
                 progress.dismiss();
             }
         });
@@ -211,9 +208,9 @@ public class CourseFragment extends Fragment {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 
                 progress.show();
-
                 String selectedTerm = termSpinner.getSelectedItem().toString();
                 selectedTermID = String.valueOf(semester.get(selectedTerm));
+                termID = termSpinner.getSelectedItemPosition();
 
                 try {
                     String[] subjectVal = Request.ExecuteQuery(new Callable<String[]>() {
@@ -227,12 +224,12 @@ public class CourseFragment extends Fragment {
                     alertDialog.show();
                 }
                 subjectSpinner.setAdapter(subjectAdapter);
+                subjectSpinner.setSelection(subjectID);
                 progress.dismiss();
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-                // TODO: Show Error dialog
             }
         });
 
@@ -240,8 +237,8 @@ public class CourseFragment extends Fragment {
         @Override
         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
             progress.show();
-
             selectedArea = subjectSpinner.getSelectedItem().toString();
+            subjectID = subjectSpinner.getSelectedItemPosition();
 
             try {
                 String[] areaVal = Request.ExecuteQuery(new Callable<String[]>() {
@@ -254,13 +251,27 @@ public class CourseFragment extends Fragment {
             } catch (Exception e) {
                 alertDialog.show();
             }
+
             areaSpinner.setAdapter(areaAdapter);
+            areaSpinner.setSelection(areaID);
+
             progress.dismiss();
         }
 
         @Override
         public void onNothingSelected(AdapterView<?> parent) {
-            // TODO: Show Error dialog
+        }
+    });
+
+    areaSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        @Override
+        public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+            areaID = areaSpinner.getSelectedItemPosition();
+        }
+
+        @Override
+        public void onNothingSelected(AdapterView<?> adapterView) {
+
         }
     });
 
@@ -282,9 +293,19 @@ public class CourseFragment extends Fragment {
     }
 
     courseListView = getView().findViewById(R.id.courseListID);
-    courseInfos = new ArrayList<CourseInfo>();
+    if(courseInfos == null) {
+        courseInfos = new ArrayList<CourseInfo>();
+    }
     adapter = new CourseListAdapter(getContext(), courseInfos, this);
     courseListView.setAdapter(adapter);
+
+    if(universityID != 0) {
+        universityGroupID.check(universityID);
+    }
+    termSpinner.setSelection(termID);
+    subjectSpinner.setSelection(subjectID);
+    areaSpinner.setSelection(areaID);
+
 
 
     Button courseSearch = getView().findViewById(R.id.courseSearchButton);
@@ -292,7 +313,9 @@ public class CourseFragment extends Fragment {
         @Override
         public void onClick(View v) {
             progress.show();
+
             new BackgroundTask().execute();
+
             progress.dismiss();
             }
         });

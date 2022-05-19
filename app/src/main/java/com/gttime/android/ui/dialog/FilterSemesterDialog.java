@@ -32,7 +32,7 @@ import java.util.concurrent.Future;
 
 public class FilterSemesterDialog extends BottomSheetDialogFragment {
     public static final String TAG = "FilterSemeterDialog";
-    private static final String SELECTED_TERM_KEY = "selected";
+    private static final String SELECTED_TERM_KEY = "selectedID";
 
     public FilterSemesterDialog() {
         super();
@@ -42,14 +42,15 @@ public class FilterSemesterDialog extends BottomSheetDialogFragment {
         return new FilterSemesterDialog();
     }
 
-    public FilterSemesterDialog(CallbackListener callbackListener) {
+    public FilterSemesterDialog(int selectedID, CallbackListener callbackListener) {
         super();
+        this.selectedID = selectedID;
         this.callbackListener = callbackListener;
     }
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (savedInstanceState != null) selected = getArguments().getInt(SELECTED_TERM_KEY);
+        if (savedInstanceState != null) selectedID = getArguments().getInt(SELECTED_TERM_KEY);
     }
 
     @Nullable
@@ -63,7 +64,7 @@ public class FilterSemesterDialog extends BottomSheetDialogFragment {
     private SemesterListAdapter semesterListAdapter;
     private CallbackListener callbackListener;
 
-    int selected;
+    private int selectedID;
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -86,13 +87,14 @@ public class FilterSemesterDialog extends BottomSheetDialogFragment {
             semester = (new MapBuilder(IntegerUtil.parseIntegerArr(semesterVal), semesterText).build());
 
             semesterView = getView().findViewById(R.id.semesterID);
-            semesterView.setSelection(selected);
-            semesterListAdapter = new SemesterListAdapter(getContext(), semester, selected);
+            semesterListAdapter = new SemesterListAdapter(getContext(), semester, selectedID);
             semesterListAdapter.setCallback(callbackListener);
             semesterView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
             semesterView.setAdapter(semesterListAdapter);
+            // TODO: Fix error
+            semesterView.setSelection(selectedID);
         } catch (Exception e) {
-            //
+
         }
     }
 

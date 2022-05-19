@@ -127,7 +127,7 @@ public final class JSONUtil {
                 jsonArray = new JSONArray();
                 JSONObject obj = new JSONObject();
                 obj.put("courses", jsonArray);
-                // TODO: chnnge it to received filename
+
                 clearJson(file);
             }
 
@@ -202,8 +202,6 @@ public final class JSONUtil {
                 obj.put("courses", jsonArray);
                 clearJson(file);
             }
-
-            // TODO : remove course from json
 
             int courseTerm = course.getCourseTerm();
             String courseTitle = course.getCourseTitle();

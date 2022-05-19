@@ -260,7 +260,6 @@ public class CourseListAdapter extends BaseAdapter {
                     continue;
                 }
 
-                // TODO : validate using math max and min
                 Time registeredCourseStartTime = registeredCourse.getStartTime();
                 Time registeredCourseEndTime = registeredCourse.getEndTime();
                 Time courseStartTime = course.getStartTime();
