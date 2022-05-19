@@ -1,6 +1,6 @@
 package com.gttime.android.util;
 
-import com.gttime.android.component.Course;
+import com.gttime.android.model.Course;
 
 import org.json.JSONArray;
 import org.json.JSONObject;

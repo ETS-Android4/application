@@ -21,9 +21,9 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
 
-import com.gttime.android.component.Course;
-import com.gttime.android.component.CourseInfo;
-import com.gttime.android.component.Seat;
+import com.gttime.android.model.Course;
+import com.gttime.android.model.CourseInfo;
+import com.gttime.android.model.Seat;
 import com.gttime.android.mapping.KeyValPair;
 import com.gttime.android.net.HttpConnection;
 import com.gttime.android.request.Request;

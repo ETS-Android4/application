@@ -6,7 +6,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
-import com.gttime.android.component.Announcement;
+import com.gttime.android.model.Announcement;
 import com.gttime.android.R;
 
 import java.util.List;

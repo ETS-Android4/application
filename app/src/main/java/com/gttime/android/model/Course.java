@@ -1,4 +1,4 @@
-package com.gttime.android.component;
+package com.gttime.android.model;
 
 import com.gttime.android.util.StringUtil;
 import com.github.tlaabs.timetableview.Time;

@@ -1,4 +1,4 @@
-package com.gttime.android.component;
+package com.gttime.android.model;
 
 public class Seat {
     int seatCapacity;

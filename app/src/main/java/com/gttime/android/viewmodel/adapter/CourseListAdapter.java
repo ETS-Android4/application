@@ -12,9 +12,9 @@ import android.widget.TextView;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
-import com.gttime.android.component.Course;
+import com.gttime.android.model.Course;
 import com.gttime.android.R;
-import com.gttime.android.component.CourseInfo;
+import com.gttime.android.model.CourseInfo;
 import com.gttime.android.view.activity.MainActivity;
 import com.gttime.android.util.IOUtil;
 import com.gttime.android.util.IntegerUtil;

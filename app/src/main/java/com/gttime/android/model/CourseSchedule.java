@@ -21,7 +21,7 @@ limitations under the License.
  * :30
  * :45
  */
-package com.gttime.android.component;
+package com.gttime.android.model;
 
 import com.github.tlaabs.timetableview.Schedule;
 import com.gttime.android.util.StringUtil;

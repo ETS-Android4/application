@@ -12,8 +12,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.gttime.android.component.Course;
-import com.gttime.android.component.CourseSchedule;
+import com.gttime.android.model.Course;
+import com.gttime.android.model.CourseSchedule;
 import com.gttime.android.R;
 import com.gttime.android.mapping.KeyValPair;
 import com.gttime.android.request.Request;

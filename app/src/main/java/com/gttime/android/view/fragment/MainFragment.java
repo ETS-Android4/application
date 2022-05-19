@@ -15,7 +15,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.google.android.gms.oss.licenses.OssLicensesMenuActivity;
-import com.gttime.android.component.Announcement;
+import com.gttime.android.model.Announcement;
 import com.gttime.android.viewmodel.adapter.AnnouncementListAdapter;
 import com.gttime.android.R;
 

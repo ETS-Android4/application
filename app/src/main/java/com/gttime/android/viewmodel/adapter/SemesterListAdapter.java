@@ -39,25 +39,20 @@ public class SemesterListAdapter <K,V> extends BaseAdapter {
         return position;
     }
 
-
-    public void setSelected(int selected) {
-        this.selected = selected;
-    }
-
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
         View v =  View.inflate(context, R.layout.semester,null);
         final RadioButton semesterButton = v.findViewById(R.id.semesterID);
         semesterButton.setText(semesterMap.get(keyset[position]).toString());
 
-        if (selected == position) semesterButton.setChecked(true);
+        if (selected == (int) keyset[position]) semesterButton.setChecked(true);
         else {semesterButton.setChecked(false);}
         semesterButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                setSelected(position);
+                selected = (int) keyset[position];
                 SemesterListAdapter.this.notifyDataSetChanged();
-                callbackListner.callback(semesterMap.get(keyset[position]).toString());
+                callbackListner.callback(keyset[position]);
             }
         });
 

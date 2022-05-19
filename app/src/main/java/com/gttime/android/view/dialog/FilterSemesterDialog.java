@@ -41,11 +41,6 @@ public class FilterSemesterDialog extends BottomSheetDialogFragment {
         this.selectedID = selectedID;
         this.callbackListener = callbackListener;
     }
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (savedInstanceState != null) selectedID = getArguments().getInt(SELECTED_TERM_KEY);
-    }
 
     @Nullable
     @Override
@@ -90,6 +85,10 @@ public class FilterSemesterDialog extends BottomSheetDialogFragment {
         } catch (Exception e) {
 
         }
+    }
+
+    public void setSelected(int id) {
+        this.selectedID = id;
     }
 
     @Override

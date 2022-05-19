@@ -5,7 +5,6 @@ import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
@@ -18,7 +17,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.gttime.android.util.CallbackListener;
-import com.gttime.android.component.Course;
+import com.gttime.android.model.Course;
 import com.gttime.android.mapping.KeyValPair;
 import com.gttime.android.request.Request;
 import com.gttime.android.view.dialog.FilterSemesterDialog;
@@ -65,9 +64,10 @@ public class StatisticsFragment extends Fragment {
     public TextView semesterTextView;
 
     private LinearLayout filterSemesterButton;
-    private Map<String, Integer> semester;
+    private Map<Integer, String> semester;
 
-    private String selectedSemester;
+    private int selectedTermID;
+    private String selectedTerm;
     private int[] semesterVal;
     private String[] semesterText;
 
@@ -101,22 +101,12 @@ public class StatisticsFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
-
-        if(savedInstanceState != null) {
-            this.selectedSemester = savedInstanceState.getString("selectedSemester");
-        }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_statistics, container, false);
-    }
-
-    @Override
-    public void onSaveInstanceState(@NonNull Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putString("selectedSemester", semesterTextView.getText().toString());
     }
 
     @Override
@@ -145,10 +135,10 @@ public class StatisticsFragment extends Fragment {
 
         statCredit = getView().findViewById(R.id.totalCredit);
         semesterTextView = getView().findViewById(R.id.semesterText);
-        semesterTextView.setText(selectedSemester);
+        semesterTextView.setText(selectedTerm);
 
-        this.semesterVal = new int[0];
-        this.semesterText = new String[0];
+        semesterVal = new int[0];
+        semesterText = new String[0];
 
         try {
             Callable<int[]> task =  new Callable<int[]>() {
@@ -159,21 +149,21 @@ public class StatisticsFragment extends Fragment {
             };
             ExecutorService service = Executors.newSingleThreadExecutor();
             Future<int[]> future = service.submit(task);
-            this.semesterVal = future.get();
-            this.semesterText = KeyValPair.mapTerm(semesterVal);
+            semesterVal = future.get();
+            semesterText = KeyValPair.mapTerm(semesterVal);
+            semester = (new MapBuilder(IntegerUtil.parseIntegerArr(semesterVal), semesterText).build());
         } catch (Exception e) {
             alertDialog.show();
         }
 
-        selectedSemester = selectedSemester == null? semesterText[0]:selectedSemester;
-        this.setSemester(this.selectedSemester);
-        semester = (new MapBuilder(semesterText, IntegerUtil.parseIntegerArr(semesterVal)).build());
+        selectedTermID = selectedTermID == 0? semesterVal[0]:selectedTermID;
+        setSemester(selectedTermID);
 
         filterSemesterButton = getView().findViewById(R.id.statisticFilter);
-        filterSemesterDialog = new FilterSemesterDialog(semester.get(selectedSemester), new CallbackListener<String>() {
+        filterSemesterDialog = new FilterSemesterDialog(selectedTermID, new CallbackListener<Integer>() {
             @Override
-            public void callback(String param) {
-                setSemester(param);
+            public void callback(Integer param) {
+                setSemester(param.intValue());
                 adapter.notifyDataSetChanged();
                 new BackgroundTask().execute();
             }
@@ -187,6 +177,7 @@ public class StatisticsFragment extends Fragment {
         filterSemesterButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                filterSemesterDialog.setSelected(selectedTermID);
                 filterSemesterDialog.show(getActivity().getSupportFragmentManager(), FilterSemesterDialog.TAG);
             }
         });
@@ -205,8 +196,7 @@ public class StatisticsFragment extends Fragment {
         @Override
         protected void onPreExecute() {
             try {
-                String v = semesterTextView.getText().toString();
-                filename = semester.get(semesterTextView.getText().toString()).toString();
+                filename = Integer.toString(selectedTermID);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -237,9 +227,10 @@ public class StatisticsFragment extends Fragment {
     }
 
 
-    public void setSemester(String semester) {
-        this.selectedSemester = semester;
-        this.semesterTextView.setText(selectedSemester);
+    public void setSemester(int termID) {
+        selectedTermID = termID;
+        selectedTerm = semester.get(termID);
+        semesterTextView.setText(selectedTerm);
     }
 
 }
