@@ -58,6 +58,8 @@ public class ScheduleFragment extends Fragment {
 
     private Map<Integer, String> semester;
 
+    private ProgressDialog progress;
+
     public ScheduleFragment() {
         // Required empty public constructor
     }
@@ -88,10 +90,6 @@ public class ScheduleFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
-
-        if(savedInstanceState != null) {
-            this.chipID = savedInstanceState.getInt("chipID");
-        }
     }
 
     @Override
@@ -102,28 +100,27 @@ public class ScheduleFragment extends Fragment {
     }
 
     @Override
-    public void onSaveInstanceState(@NonNull Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putInt("chipID", chipGroup.getCheckedChipId());
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        progress = new ProgressDialog(getActivity());
+        progress.setMessage("Wait while loading...");
+        progress.setTitle("Loading");
+        timeTable = getView().findViewById(R.id.timetable);
+        chipGroup = getView().findViewById(R.id.semesterGroup);
+
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        final ProgressDialog progress = new ProgressDialog(getActivity());
-        progress.setMessage("Wait while loading...");
-        progress.setTitle("Loading");
         progress.show();
-
         schedules = new ArrayList<Schedule>();
-        timeTable = getView().findViewById(R.id.timetable);
-
-        chipGroup = getView().findViewById(R.id.semesterGroup);
-
         Map<Integer, String> semester;
         String[] semesterText;
         int[] semesterVal;
+
         try {
             Callable<int[]> task =  new Callable<int[]>() {
                 @Override

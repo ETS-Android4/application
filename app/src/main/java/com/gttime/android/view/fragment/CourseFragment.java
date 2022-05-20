@@ -75,6 +75,8 @@ public class CourseFragment extends Fragment {
 
     private int[] semesterVal;
     private String[] semesterText;
+    private String[] subjectVal;
+    private String[] areaVal;
 
     // container variables for database query
     private String selectedUniversity;
@@ -86,6 +88,9 @@ public class CourseFragment extends Fragment {
     private int termID;
     private int areaID;
     private int subjectID;
+
+    private ProgressDialog progress;
+    private AlertDialog alertDialog;
 
     public CourseFragment() {
         // Required empty public constructor
@@ -117,20 +122,6 @@ public class CourseFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
-
-        if(savedInstanceState != null) {
-            universityID = savedInstanceState.getInt("universityID");
-            subjectID = savedInstanceState.getInt("subjectID");
-            termID = savedInstanceState.getInt("termID");
-            areaID = savedInstanceState.getInt("areaID");
-        }
-
-        else {
-            universityID = 0;
-            subjectID = 0;
-            termID = 0;
-            areaID = 0;
-        }
     }
 
     @Override
@@ -140,24 +131,13 @@ public class CourseFragment extends Fragment {
     }
 
     @Override
-    public void onSaveInstanceState(@NonNull Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putInt("universityID", universityGroupID.getCheckedRadioButtonId());
-        outState.putInt("subjectID", subjectSpinner.getSelectedItemPosition());
-        outState.putInt("termID", termSpinner.getSelectedItemPosition());
-        outState.putInt("areaID", areaSpinner.getSelectedItemPosition());
-    }
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
 
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-
-        final ProgressDialog progress = new ProgressDialog(getActivity());
+        progress = new ProgressDialog(getActivity());
         progress.setMessage("Wait while loading...");
         progress.setTitle("Loading");
-        progress.show();
 
-        final AlertDialog alertDialog;
         AlertDialog.Builder builder = new AlertDialog.Builder(CourseFragment.this.getActivity());
         alertDialog = builder.setMessage("Connection Error")
                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {
@@ -173,6 +153,14 @@ public class CourseFragment extends Fragment {
         termSpinner = getView().findViewById(R.id.semesterID);
         subjectSpinner = getView().findViewById(R.id.subjectID);
         areaSpinner = getView().findViewById(R.id.areaID);
+        courseListView = getView().findViewById(R.id.courseListID);
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+        progress.show();
 
         universityGroupID.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
@@ -192,11 +180,12 @@ public class CourseFragment extends Fragment {
                     ExecutorService service = Executors.newSingleThreadExecutor();
                     Future<int[]> future = service.submit(task);
                     semesterVal = future.get();
-                    semesterText = KeyValPair.mapTerm(semesterVal);
-                    termAdapter = new ArrayAdapter(getActivity(), android.R.layout.simple_spinner_dropdown_item, semesterText);
                 } catch (Exception e) {
                     alertDialog.show();
                 }
+
+                semesterText = KeyValPair.mapTerm(semesterVal);
+                termAdapter = new ArrayAdapter(getActivity(), android.R.layout.simple_spinner_dropdown_item, semesterText);
                 termSpinner.setAdapter(termAdapter);
                 termSpinner.setSelection(termID);
                 progress.dismiss();
@@ -213,16 +202,16 @@ public class CourseFragment extends Fragment {
                 termID = termSpinner.getSelectedItemPosition();
 
                 try {
-                    String[] subjectVal = Request.ExecuteQuery(new Callable<String[]>() {
+                    subjectVal = Request.ExecuteQuery(new Callable<String[]>() {
                         @Override
                         public String[] call() throws Exception {
                             return Request.queryMajor(selectedUniversity, selectedTermID);
                         }
                     });
-                    subjectAdapter = new ArrayAdapter(getActivity(), android.R.layout.simple_spinner_dropdown_item, subjectVal);
                 } catch (Exception e) {
                     alertDialog.show();
                 }
+                subjectAdapter = new ArrayAdapter(getActivity(), android.R.layout.simple_spinner_dropdown_item, subjectVal);
                 subjectSpinner.setAdapter(subjectAdapter);
                 subjectSpinner.setSelection(subjectID);
                 progress.dismiss();
@@ -233,94 +222,90 @@ public class CourseFragment extends Fragment {
             }
         });
 
-    subjectSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-        @Override
-        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-            progress.show();
-            selectedArea = subjectSpinner.getSelectedItem().toString();
-            subjectID = subjectSpinner.getSelectedItemPosition();
+        subjectSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                progress.show();
+                selectedArea = subjectSpinner.getSelectedItem().toString();
+                subjectID = subjectSpinner.getSelectedItemPosition();
 
-            try {
-                String[] areaVal = Request.ExecuteQuery(new Callable<String[]>() {
-                    @Override
-                    public String[] call() throws Exception {
-                        return Request.queryArea(selectedUniversity, selectedTermID, selectedArea);
-                    }
-                });
+                try {
+                    areaVal = Request.ExecuteQuery(new Callable<String[]>() {
+                        @Override
+                        public String[] call() throws Exception {
+                            return Request.queryArea(selectedUniversity, selectedTermID, selectedArea);
+                        }
+                    });
+                } catch (Exception e) {
+                    alertDialog.show();
+                }
+
                 areaAdapter = new ArrayAdapter(getActivity(), android.R.layout.simple_spinner_dropdown_item, areaVal);
-            } catch (Exception e) {
-                alertDialog.show();
+                areaSpinner.setAdapter(areaAdapter);
+                areaSpinner.setSelection(areaID);
+
+                progress.dismiss();
             }
 
-            areaSpinner.setAdapter(areaAdapter);
-            areaSpinner.setSelection(areaID);
-
-            progress.dismiss();
-        }
-
-        @Override
-        public void onNothingSelected(AdapterView<?> parent) {
-        }
-    });
-
-    areaSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-        @Override
-        public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-            areaID = areaSpinner.getSelectedItemPosition();
-        }
-
-        @Override
-        public void onNothingSelected(AdapterView<?> adapterView) {
-
-        }
-    });
-
-    Callable<int[]> task = new Callable<int[]>() {
-        @Override
-        public int[] call() throws Exception {
-            return Request.queryTerm();
-        }
-    };
-    ExecutorService service = Executors.newSingleThreadExecutor();
-    Future<int[]> future = service.submit(task);
-
-    try {
-        semesterVal = future.get();
-        semesterText = KeyValPair.mapTerm(semesterVal);
-        semester = (new MapBuilder(semesterText, IntegerUtil.parseIntegerArr(semesterVal)).build());
-    } catch (Exception e) {
-        alertDialog.show();
-    }
-
-    courseListView = getView().findViewById(R.id.courseListID);
-    if(courseInfos == null) {
-        courseInfos = new ArrayList<CourseInfo>();
-    }
-    adapter = new CourseListAdapter(getContext(), courseInfos, this);
-    courseListView.setAdapter(adapter);
-
-    if(universityID != 0) {
-        universityGroupID.check(universityID);
-    }
-    termSpinner.setSelection(termID);
-    subjectSpinner.setSelection(subjectID);
-    areaSpinner.setSelection(areaID);
-
-
-
-    Button courseSearch = getView().findViewById(R.id.courseSearchButton);
-    courseSearch.setOnClickListener(new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            progress.show();
-
-            new BackgroundTask().execute();
-
-            progress.dismiss();
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
             }
         });
 
-    progress.dismiss();
+        areaSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                areaID = areaSpinner.getSelectedItemPosition();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+
+
+        Callable<int[]> task = new Callable<int[]>() {
+            @Override
+            public int[] call() throws Exception {
+                return Request.queryTerm();
+            }
+        };
+        ExecutorService service = Executors.newSingleThreadExecutor();
+        Future<int[]> future = service.submit(task);
+
+        try {
+            semesterVal = future.get();
+        } catch (Exception e) {
+            alertDialog.show();
+        }
+
+        semesterText = KeyValPair.mapTerm(semesterVal);
+        semester = (new MapBuilder(semesterText, IntegerUtil.parseIntegerArr(semesterVal)).build());
+        courseInfos = courseInfos == null? new ArrayList<CourseInfo>():courseInfos;
+        adapter = new CourseListAdapter(getContext(), courseInfos, this);
+        courseListView.setAdapter(adapter);
+
+        if(universityID != 0) {
+            universityGroupID.check(universityID);
+            termSpinner.setSelection(termID);
+            subjectSpinner.setSelection(subjectID);
+            areaSpinner.setSelection(areaID);
+        }
+
+        Button courseSearch = getView().findViewById(R.id.courseSearchButton);
+        courseSearch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                progress.show();
+
+                new BackgroundTask().execute();
+
+                progress.dismiss();
+                }
+            });
+
+        progress.dismiss();
     }
 
     class BackgroundTask extends AsyncTask {

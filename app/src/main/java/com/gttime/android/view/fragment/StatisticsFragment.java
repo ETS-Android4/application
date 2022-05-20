@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
@@ -71,6 +72,9 @@ public class StatisticsFragment extends Fragment {
     private int[] semesterVal;
     private String[] semesterText;
 
+    private ProgressDialog progress;
+    private AlertDialog alertDialog;
+
     public StatisticsFragment() {
         // Required empty public constructor
     }
@@ -110,15 +114,13 @@ public class StatisticsFragment extends Fragment {
     }
 
     @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
 
-        final ProgressDialog progress = new ProgressDialog(getActivity());
+        progress = new ProgressDialog(getActivity());
         progress.setMessage("Wait while loading...");
         progress.setTitle("Loading");
-        progress.show();
 
-        final AlertDialog alertDialog;
         AlertDialog.Builder builder = new AlertDialog.Builder(StatisticsFragment.this.getActivity());
         alertDialog = builder.setMessage("Connection Error")
                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {
@@ -130,13 +132,18 @@ public class StatisticsFragment extends Fragment {
                 })
                 .create();
 
-        progress.show();
-
-
         statCredit = getView().findViewById(R.id.totalCredit);
         semesterTextView = getView().findViewById(R.id.semesterText);
-        semesterTextView.setText(selectedTerm);
+        filterSemesterButton = getView().findViewById(R.id.statisticFilter);
+        courseListView = getView().findViewById(R.id.courseListView);
+    }
 
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+        progress.show();
+        semesterTextView.setText(selectedTerm);
         semesterVal = new int[0];
         semesterText = new String[0];
 
@@ -159,7 +166,6 @@ public class StatisticsFragment extends Fragment {
         selectedTermID = selectedTermID == 0? semesterVal[0]:selectedTermID;
         setSemester(selectedTermID);
 
-        filterSemesterButton = getView().findViewById(R.id.statisticFilter);
         filterSemesterDialog = new FilterSemesterDialog(selectedTermID, new CallbackListener<Integer>() {
             @Override
             public void callback(Integer param) {
@@ -169,7 +175,6 @@ public class StatisticsFragment extends Fragment {
             }
         });
 
-        courseListView = getView().findViewById(R.id.courseListView);
         courseList = new ArrayList<Course>();
         adapter = new StatisticsCourseListAdapter(getContext(), courseList,this);
         courseListView.setAdapter(adapter);

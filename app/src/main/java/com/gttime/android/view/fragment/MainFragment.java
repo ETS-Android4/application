@@ -72,6 +72,8 @@ public class MainFragment extends Fragment {
     private List<Announcement> announcementList;
     private AnnouncementListAdapter adapter;
     private ListView announcementListView;
+    private LinearLayout announcement;
+    private TextView licenseView;
 
     @Nullable
     @Override
@@ -80,17 +82,22 @@ public class MainFragment extends Fragment {
     }
 
     @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        announcementListView = getView().findViewById(R.id.AnnouncementList);
+        announcement = (LinearLayout) getView().findViewById(R.id.Announcement);
+        licenseView = getView().findViewById(R.id.information);
+    }
+
+    @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        announcementListView = getView().findViewById(R.id.AnnouncementList);
         announcementList = new ArrayList<Announcement>();
         adapter = new AnnouncementListAdapter(getContext(),announcementList);
         announcementListView.setAdapter(adapter);
 
-        final LinearLayout announcement = (LinearLayout) getView().findViewById(R.id.Announcement);
-
-        final TextView licenseView = getView().findViewById(R.id.information);
         licenseView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
