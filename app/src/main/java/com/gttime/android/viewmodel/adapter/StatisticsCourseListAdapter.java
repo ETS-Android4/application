@@ -22,23 +22,23 @@ import java.util.List;
 
 public class StatisticsCourseListAdapter extends BaseAdapter {
     private Context context;
-    private List<Course> courseScheduleList;
+    private List<Course> courseList;
     private Fragment parent;
 
-    public StatisticsCourseListAdapter(Context context, List<Course> courseScheduleList, Fragment parent) {
+    public StatisticsCourseListAdapter(Context context, List<Course> courseList, Fragment parent) {
         this.context = context;
-        this.courseScheduleList = courseScheduleList;
+        this.courseList = courseList;
         this.parent = parent;
     }
 
     @Override
     public int getCount() {
-        return courseScheduleList.size();
+        return courseList.size();
     }
 
     @Override
     public Object getItem(int position) {
-        return courseScheduleList.get(position);
+        return courseList.get(position);
     }
 
     @Override
@@ -56,13 +56,13 @@ public class StatisticsCourseListAdapter extends BaseAdapter {
         TextView courseSection = v.findViewById(R.id.courseSection);
         TextView courseTime = v.findViewById(R.id.statisticTimeID);
 
-        courseArea.setText(courseScheduleList.get(position).getCourseArea());
-        courseCRN.setText(courseScheduleList.get(position).getCourseCRN());
-        courseTitle.setText(courseScheduleList.get(position).getCourseTitle());
-        courseSection.setText(courseScheduleList.get(position).getCourseSection());
-        courseTime.setText(courseScheduleList.get(position).getCourseTime());
+        courseArea.setText(courseList.get(position).getCourseArea());
+        courseCRN.setText(courseList.get(position).getCourseCRN());
+        courseTitle.setText(courseList.get(position).getCourseTitle());
+        courseSection.setText(courseList.get(position).getCourseSection());
+        courseTime.setText(courseList.get(position).getCourseTime());
 
-        v.setTag(courseScheduleList.get(position).getCourseCRN());
+        v.setTag(courseList.get(position).getCourseCRN());
 
         deleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -70,8 +70,8 @@ public class StatisticsCourseListAdapter extends BaseAdapter {
 
                 try
                     {
-                        String semesterID = Integer.toString(courseScheduleList.get(position).getCourseTerm());
-                        boolean success = JSONUtil.deleteCourse(new File(parent.getActivity().getFilesDir(), IOUtil.getFileName(semesterID)), courseScheduleList.get(position));
+                        String semesterID = Integer.toString(courseList.get(position).getCourseTerm());
+                        boolean success = JSONUtil.deleteCourse(new File(parent.getActivity().getFilesDir(), IOUtil.getFileName(semesterID)), courseList.get(position).getCourseCRN());
                         if(success)
                         {
                             //parent - 자신을 불러낸 course Fragment 에서 알림창을 띄워줌
@@ -80,9 +80,9 @@ public class StatisticsCourseListAdapter extends BaseAdapter {
                                     .setPositiveButton("OK",null)
                                     .create();
                             dialog.show();
-                            StatisticsFragment.totalCredit -= IntegerUtil.parseInt(courseScheduleList.get(position).getCourseCredit().split(" ")[0]);
+                            StatisticsFragment.totalCredit -= IntegerUtil.parseInt(courseList.get(position).getCourseCredit().split(" ")[0]);
                             StatisticsFragment.statCredit.setText(StatisticsFragment.totalCredit + " Credits");
-                            courseScheduleList.remove(position);
+                            courseList.remove(position);
                             notifyDataSetChanged();
                         }
 

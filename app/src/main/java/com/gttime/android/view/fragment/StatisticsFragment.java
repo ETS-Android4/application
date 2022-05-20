@@ -130,7 +130,7 @@ public class StatisticsFragment extends Fragment {
                         System.exit(1);
                     }
                 })
-                .create();
+                .show();
 
         statCredit = getView().findViewById(R.id.totalCredit);
         semesterTextView = getView().findViewById(R.id.semesterText);

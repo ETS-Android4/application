@@ -1,11 +1,13 @@
 package com.gttime.android.view.fragment;
 
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
@@ -57,6 +59,7 @@ public class ScheduleFragment extends Fragment {
     private int chipID;
 
     private Map<Integer, String> semester;
+    private ArrayList<String> timeTableCRN;
 
     private ProgressDialog progress;
 
@@ -164,8 +167,17 @@ public class ScheduleFragment extends Fragment {
 
         timeTable.setOnStickerSelectEventListener(new TimetableView.OnStickerSelectedListener() {
             @Override
-            public void OnStickerSelected(int idx, ArrayList<Schedule> schedules) {
-
+            public void OnStickerSelected(final int idx, ArrayList<Schedule> schedulesParam) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(ScheduleFragment.this.getActivity());
+                AlertDialog alertDialog = builder.setMessage("Delete from schedule?")
+                        .setPositiveButton("DELETE", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                JSONUtil.deleteCourse(new File(getActivity().getFilesDir(), IOUtil.getFileName(Integer.toString(chipID))), timeTableCRN.get(idx));
+                                timeTable.remove(idx);
+                            }
+                        })
+                        .show();
             }
         });
     }
@@ -194,17 +206,28 @@ public class ScheduleFragment extends Fragment {
         @Override
         protected void onPostExecute(Object o) {
             schedules.clear();
+            timeTable.removeAll();
+            timeTableCRN = new ArrayList<String>();
             List<Course> registeredCourses = JSONUtil.fetchCourse((String) o);
+
             for(int i = 0; i < registeredCourses.size(); i++) {
                 int days = registeredCourses.get(i).getCourseDay().length();
 
+                // XXX: ERROR with timetable duplicate adding course to sticker
                 String courseInstructor = registeredCourses.get(i).getCourseInstructor();
                 String courseTitle = registeredCourses.get(i).getCourseTitle();
+                String courseCRN = registeredCourses.get(i).getCourseCRN();
                 String courseLocation = registeredCourses.get(i).getCourseLocation();
                 String courseDay = registeredCourses.get(i).getCourseDay();
                 String courseTime = registeredCourses.get(i).getCourseTime();
                 for(int j = 0; j < days; j++) schedules.add(new CourseSchedule(courseTitle, courseInstructor, courseLocation, courseTime, courseDay.charAt(j)));
                 timeTable.add(schedules);
+
+                if(timeTableCRN.contains(courseCRN)) {
+                    continue;
+                }
+
+                timeTableCRN.add(courseCRN);
             }
         }
     }

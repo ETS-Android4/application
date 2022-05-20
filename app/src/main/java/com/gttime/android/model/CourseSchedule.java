@@ -31,8 +31,9 @@ import java.util.Map;
 
 public class CourseSchedule extends Schedule {
     private Map<Integer, Integer> parseTimedTime;
+    private int courseCRN;
 
-    public CourseSchedule() {
+    public CourseSchedule(String courseTitle, String courseCRN, String courseInstructor, String courseLocation, String courseTime, char c) {
         super();
     }
 

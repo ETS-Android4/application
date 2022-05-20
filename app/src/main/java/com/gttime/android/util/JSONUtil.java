@@ -1,6 +1,8 @@
 package com.gttime.android.util;
 
+import com.github.tlaabs.timetableview.Time;
 import com.gttime.android.model.Course;
+import com.gttime.android.model.CourseTime;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -182,7 +184,7 @@ public final class JSONUtil {
         return true;
     }
 
-    public static boolean deleteCourse(File file, Course course) {
+    public static boolean deleteCourse(File file, String courseCRN) {
         try {
             String response = readJson(file);
 
@@ -202,21 +204,6 @@ public final class JSONUtil {
                 obj.put("courses", jsonArray);
                 clearJson(file);
             }
-
-            int courseTerm = course.getCourseTerm();
-            String courseTitle = course.getCourseTitle();
-            String courseTime = course.getCourseTime();
-            String courseDay = course.getCourseDay();
-            String courseLocation = course.getCourseLocation();
-            String courseInstructor = course.getCourseInstructor();
-            String courseCRN = course.getCourseCRN();
-            String courseCredit = course.getCourseCredit();
-            String courseMajor = course.getCourseMajor();
-            String courseArea = course.getCourseArea();
-            String courseSection = course.getCourseSection();
-            String courseClass = course.getCourseClass();
-            String courseUniversity = course.getCourseUniversity();
-            String courseAttribute = course.getCourseAttribute();
 
             JSONArray updatedJsonArray = new JSONArray();
             for (int i =0; i<jsonArray.length(); i++) {
