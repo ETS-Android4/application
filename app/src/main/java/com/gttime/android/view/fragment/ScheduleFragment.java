@@ -205,12 +205,12 @@ public class ScheduleFragment extends Fragment {
 
         @Override
         protected void onPostExecute(Object o) {
-            schedules.clear();
             timeTable.removeAll();
             timeTableCRN = new ArrayList<String>();
             List<Course> registeredCourses = JSONUtil.fetchCourse((String) o);
 
             for(int i = 0; i < registeredCourses.size(); i++) {
+                schedules.clear();
                 int days = registeredCourses.get(i).getCourseDay().length();
 
                 // XXX: ERROR with timetable duplicate adding course to sticker

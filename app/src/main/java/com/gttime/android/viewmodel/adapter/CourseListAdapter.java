@@ -82,6 +82,7 @@ public class CourseListAdapter extends BaseAdapter {
             courseInstructor.setText(courseInfos.get(position).getCourse().getCourseInstructor());
         }
 
+        semester = Integer.toString(courseInfos.get(position).getCourse().getCourseTerm());
         courseCredit.setText(courseInfos.get(position).getCourse().getCourseCredit());
         courseTerm.setText(String.valueOf(courseInfos.get(position).getCourse().getCourseTerm()));
         courseCRN.setText(courseInfos.get(position).getCourse().getCourseCRN());

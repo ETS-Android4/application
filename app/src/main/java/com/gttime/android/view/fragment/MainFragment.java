@@ -1,6 +1,5 @@
 package com.gttime.android.view.fragment;
 
-import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -14,7 +13,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import com.google.android.gms.oss.licenses.OssLicensesMenuActivity;
 import com.gttime.android.model.Announcement;
 import com.gttime.android.viewmodel.adapter.AnnouncementListAdapter;
 import com.gttime.android.R;
@@ -87,7 +85,6 @@ public class MainFragment extends Fragment {
 
         announcementListView = getView().findViewById(R.id.AnnouncementList);
         announcement = (LinearLayout) getView().findViewById(R.id.Announcement);
-        licenseView = getView().findViewById(R.id.information);
     }
 
     @Override
@@ -97,14 +94,6 @@ public class MainFragment extends Fragment {
         announcementList = new ArrayList<Announcement>();
         adapter = new AnnouncementListAdapter(getContext(),announcementList);
         announcementListView.setAdapter(adapter);
-
-        licenseView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(getActivity(), OssLicensesMenuActivity.class));
-                OssLicensesMenuActivity.setActivityTitle(getString(R.string.license_title));
-            }
-        });
 
         new AnnouncementTask().execute();
     }
