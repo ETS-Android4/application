@@ -117,7 +117,7 @@ public class StatisticsFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        progress = new ProgressDialog(getActivity());
+        progress = new ProgressDialog(getActivity(), ProgressDialog.STYLE_SPINNER);
         progress.setMessage("Wait while loading...");
         progress.setTitle("Loading");
 
@@ -142,7 +142,6 @@ public class StatisticsFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        progress.show();
         semesterTextView.setText(selectedTerm);
         semesterVal = new int[0];
         semesterText = new String[0];
@@ -190,8 +189,6 @@ public class StatisticsFragment extends Fragment {
 
         new BackgroundTask().execute();
         totalCredit = 0;
-
-        progress.dismiss();
 
     }
 

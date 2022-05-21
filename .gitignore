@@ -1,29 +1,24 @@
 
 # Local configuration file (sdk path, etc)
-/local.properties
+**/local.properties
+**/local
 
-# OSX files
-.DS_Store
-/build
-/captures
-.externalNativeBuild
-.cxx
+# Storeage file
+**/build/*
 
-# IntelliJ
-*.iml
-/.idea/caches
-/.idea/libraries
-/.idea/modules.xml
-/.idea/workspace.xml
-/.idea/navEditor.xml
-/.idea/assetWizardSettings.xml
-/.idea/*
-/.idea
+# IDE config file
+**/.idea/*.iws
+**/.idea/workspace.xml
+**/.idea/tasks.xml
 
-# server files
-/aws
-/php
-/php/*
+# binary files
+/.gradle/**/*.bin
+
+# security files
+/.gradle/**/*.lock
 
 # link files
-*.lnk
+#*.lnk
+
+# libraries
+/timetableview

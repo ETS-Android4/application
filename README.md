@@ -1,7 +1,7 @@
 # GT-Time
 Android app for georgia tech courseSchedule registration.\
 Code is written in Android Studio, Java based.\
-![App Img](app/src/main/res/img/portfolio1.png)
+![App Img](img/thumbnail.png)
 
 # Features
 * Supports user login 

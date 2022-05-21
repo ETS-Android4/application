@@ -103,7 +103,7 @@ public class ScheduleFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        progress = new ProgressDialog(getActivity());
+        progress = new ProgressDialog(getActivity(), ProgressDialog.STYLE_SPINNER);
         progress.setMessage("Wait while loading...");
         progress.setTitle("Loading");
         timeTable = getView().findViewById(R.id.timetable);
@@ -115,7 +115,6 @@ public class ScheduleFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        progress.show();
         schedules = new ArrayList<Schedule>();
         Map<Integer, String> semester;
         String[] semesterText;
@@ -157,14 +156,11 @@ public class ScheduleFragment extends Fragment {
             public void onCheckedChanged(ChipGroup group, int checkedId) {
                 chipID = chipGroup.getCheckedChipId();
                 timeTable.removeAll();
-                progress.show();
                 new BackgroundTask().execute();
-                progress.dismiss();
             }
         });
 
         new BackgroundTask().execute();
-        progress.dismiss();
 
         timeTable.setOnStickerSelectEventListener(new TimetableView.OnStickerSelectedListener() {
             @Override

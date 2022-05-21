@@ -39,34 +39,97 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
 
             case R.id.home:
                 mainFragment = getSupportFragmentManager().findFragmentByTag("mainFragment");
+
                 if(!this.validateFragment(mainFragment)) {
                     mainFragment = new MainFragment();
                 }
-                getSupportFragmentManager().beginTransaction().replace(R.id.relativeLayout, mainFragment, "mainFragment").addToBackStack("mainTag").commit();
+
+                if(mainFragment.isAdded()) {
+                    getSupportFragmentManager()
+                            .beginTransaction()
+                            .show(mainFragment);
+
+                    return true;
+                }
+
+                getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.relativeLayout, mainFragment, "mainFragment")
+                        .setReorderingAllowed(true)
+                        .commit();
+
                 return true;
 
             case R.id.course:
                 courseFragment = getSupportFragmentManager().findFragmentByTag("courseFragment");
+
                 if(!this.validateFragment(courseFragment)) {
                     courseFragment = new CourseFragment();
                 }
-                getSupportFragmentManager().beginTransaction().replace(R.id.relativeLayout, courseFragment, "courseFragment").addToBackStack("courseTag").commit();
+
+                if(courseFragment.isAdded()) {
+                    getSupportFragmentManager()
+                            .beginTransaction()
+                            .show(courseFragment);
+
+                    return true;
+                }
+
+                getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.relativeLayout, courseFragment, "courseFragment")
+                        .addToBackStack("courseTag")
+                        .setReorderingAllowed(true)
+                        .commit();
+
                 return true;
 
             case R.id.schedule:
                 scheduleFragment = getSupportFragmentManager().findFragmentByTag("scheduleFragment");
+
                 if(!this.validateFragment(scheduleFragment)) {
                     scheduleFragment = new ScheduleFragment();
                 }
-                getSupportFragmentManager().beginTransaction().replace(R.id.relativeLayout, scheduleFragment, "scheduleFragment").addToBackStack("scheduleTag").commit();
+
+                if(scheduleFragment.isAdded()) {
+                    getSupportFragmentManager()
+                            .beginTransaction()
+                            .show(scheduleFragment);
+
+                    return true;
+                }
+
+                getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.relativeLayout, scheduleFragment, "scheduleFragment")
+                        .addToBackStack("scheduleTag")
+                        .setReorderingAllowed(true)
+                        .commit();
+
                 return true;
 
             case R.id.statistics:
                 statisticFragment = getSupportFragmentManager().findFragmentByTag("statisticsFragment");
+
                 if(!this.validateFragment(statisticFragment)) {
                     statisticFragment = new StatisticsFragment();
                 }
-                getSupportFragmentManager().beginTransaction().replace(R.id.relativeLayout, statisticFragment, "statisticsFragment").addToBackStack("statisticsTag").commit();
+
+                if(statisticFragment.isAdded()) {
+                    getSupportFragmentManager()
+                            .beginTransaction()
+                            .show(statisticFragment);
+
+                    return true;
+                }
+
+                getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.relativeLayout, statisticFragment, "statisticsFragment")
+                        .addToBackStack("statisticsTag")
+                        .setReorderingAllowed(true)
+                        .commit();
+
                 return true;
         }
         return false;
@@ -88,7 +151,6 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
            finish();
             return;
         }
-        //Toast.makeText(this,"Press back to home screen.",Toast.LENGTH_SHORT).show();
 
         if (getFragmentManager().getBackStackEntryCount() > 0) {
             getFragmentManager().popBackStack();

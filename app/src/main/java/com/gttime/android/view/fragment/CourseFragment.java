@@ -134,20 +134,7 @@ public class CourseFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        progress = new ProgressDialog(getActivity());
-        progress.setMessage("Wait while loading...");
-        progress.setTitle("Loading");
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(CourseFragment.this.getActivity());
-        alertDialog = builder.setMessage("Connection Error")
-                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        System.exit(1);
-                    }
-                })
-                .create();
+        progress = new ProgressDialog(getActivity(), ProgressDialog.STYLE_SPINNER);
 
         universityGroupID = getView().findViewById(R.id.universityGroupID);
         termSpinner = getView().findViewById(R.id.semesterID);
@@ -160,15 +147,25 @@ public class CourseFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        progress.show();
+        AlertDialog.Builder builder = new AlertDialog.Builder(CourseFragment.this.getActivity());
+        alertDialog = builder.setMessage("Connection Error")
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        System.exit(1);
+                    }
+                })
+                .create();
 
         universityGroupID.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
-                final RadioButton gradeID = getView().findViewById(checkedId);
+                // TODO: fix error
+                RadioButton gradeID = group.findViewById(checkedId);
                 selectedUniversity = gradeID.getText().toString();
-                universityID = universityGroupID.getCheckedRadioButtonId();
-                progress.show();
+                universityID = checkedId;
+
                 try {
                     // TODO: Figure out way to call Request.ExecuteQuery with primitives
                     Callable<int[]> task =  new Callable<int[]>() {
@@ -180,6 +177,7 @@ public class CourseFragment extends Fragment {
                     ExecutorService service = Executors.newSingleThreadExecutor();
                     Future<int[]> future = service.submit(task);
                     semesterVal = future.get();
+
                 } catch (Exception e) {
                     alertDialog.show();
                 }
@@ -188,7 +186,6 @@ public class CourseFragment extends Fragment {
                 termAdapter = new ArrayAdapter(getActivity(), android.R.layout.simple_spinner_dropdown_item, semesterText);
                 termSpinner.setAdapter(termAdapter);
                 termSpinner.setSelection(termID);
-                progress.dismiss();
             }
         });
 
@@ -196,7 +193,6 @@ public class CourseFragment extends Fragment {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 
-                progress.show();
                 String selectedTerm = termSpinner.getSelectedItem().toString();
                 selectedTermID = String.valueOf(semester.get(selectedTerm));
                 termID = termSpinner.getSelectedItemPosition();
@@ -214,7 +210,6 @@ public class CourseFragment extends Fragment {
                 subjectAdapter = new ArrayAdapter(getActivity(), android.R.layout.simple_spinner_dropdown_item, subjectVal);
                 subjectSpinner.setAdapter(subjectAdapter);
                 subjectSpinner.setSelection(subjectID);
-                progress.dismiss();
             }
 
             @Override
@@ -225,7 +220,6 @@ public class CourseFragment extends Fragment {
         subjectSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                progress.show();
                 selectedArea = subjectSpinner.getSelectedItem().toString();
                 subjectID = subjectSpinner.getSelectedItemPosition();
 
@@ -244,7 +238,6 @@ public class CourseFragment extends Fragment {
                 areaSpinner.setAdapter(areaAdapter);
                 areaSpinner.setSelection(areaID);
 
-                progress.dismiss();
             }
 
             @Override
@@ -263,7 +256,6 @@ public class CourseFragment extends Fragment {
 
             }
         });
-
 
         Callable<int[]> task = new Callable<int[]>() {
             @Override
@@ -286,6 +278,7 @@ public class CourseFragment extends Fragment {
         adapter = new CourseListAdapter(getContext(), courseInfos, this);
         courseListView.setAdapter(adapter);
 
+        // load stored state
         if(universityID != 0) {
             universityGroupID.check(universityID);
             termSpinner.setSelection(termID);
@@ -297,15 +290,10 @@ public class CourseFragment extends Fragment {
         courseSearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                progress.show();
-
                 new BackgroundTask().execute();
-
-                progress.dismiss();
                 }
             });
 
-        progress.dismiss();
     }
 
     class BackgroundTask extends AsyncTask {
