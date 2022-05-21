@@ -9,8 +9,15 @@ Code is written in Android Studio, Java based.\
 * Organized schedule UI with courses added by user 
 
 # Installation
-Download source\
-`git clone https://github.com/cshim31/BuzzTime-Android-App.git `
+Clone repo\
+`git clone https://github.com/cshim31/application.git`
+
+Initiate submodules\
+`git submodule update --init`
+
+This command does both cloning and initiating submodule\
+`git clone --recurse-submodules https://github.com/cshim31/application.git`
+
 
 # Usage
 

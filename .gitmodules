@@ -1,0 +1,3 @@
+[submodule "TimetableView"]
+	path = TimetableView
+	url = https://github.com/tlaabs/TimetableView.git
