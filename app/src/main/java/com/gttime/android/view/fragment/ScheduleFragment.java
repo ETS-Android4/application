@@ -30,6 +30,7 @@ import com.gttime.android.util.MapBuilder;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
@@ -57,9 +58,10 @@ public class ScheduleFragment extends Fragment {
     private TimetableView timeTable;
 
     private int chipID;
+    private int timeTableStickerID;
 
     private Map<Integer, String> semester;
-    private ArrayList<String> timeTableCRN;
+    private Map<Integer, String> timeTableCRN;
 
     private ProgressDialog progress;
 
@@ -163,6 +165,10 @@ public class ScheduleFragment extends Fragment {
             }
         });
 
+
+        timeTableStickerID =  0;
+        timeTableCRN = new HashMap<Integer, String>();
+
         new BackgroundTask().execute();
 
         timeTable.setOnStickerSelectEventListener(new TimetableView.OnStickerSelectedListener() {
@@ -173,7 +179,8 @@ public class ScheduleFragment extends Fragment {
                         .setPositiveButton("DELETE", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
-                                JSONUtil.deleteCourse(new File(getActivity().getFilesDir(), IOUtil.getFileName(Integer.toString(chipID))), timeTableCRN.get(idx));
+                                String targetCRN = timeTableCRN.get(idx);
+                                JSONUtil.deleteCourse(new File(getActivity().getFilesDir(), IOUtil.getFileName(Integer.toString(chipID))), targetCRN);
                                 timeTable.remove(idx);
                             }
                         })
@@ -205,10 +212,9 @@ public class ScheduleFragment extends Fragment {
 
         @Override
         protected void onPostExecute(Object o) {
-            timeTable.removeAll();
-            timeTableCRN = new ArrayList<String>();
             List<Course> registeredCourses = JSONUtil.fetchCourse((String) o);
 
+            timeTableCRN.clear();
             for(int i = 0; i < registeredCourses.size(); i++) {
                 schedules.clear();
                 int days = registeredCourses.get(i).getCourseDay().length();
@@ -220,14 +226,17 @@ public class ScheduleFragment extends Fragment {
                 String courseLocation = registeredCourses.get(i).getCourseLocation();
                 String courseDay = registeredCourses.get(i).getCourseDay();
                 String courseTime = registeredCourses.get(i).getCourseTime();
-                for(int j = 0; j < days; j++) schedules.add(new CourseSchedule(courseTitle, courseInstructor, courseLocation, courseTime, courseDay.charAt(j)));
-                timeTable.add(schedules);
-
-                if(timeTableCRN.contains(courseCRN)) {
-                    continue;
+                for(int j = 0; j < days; j++) {
+                    CourseSchedule cs = new CourseSchedule(courseTitle, courseInstructor, courseLocation, courseTime, courseDay.charAt(j));
+                    schedules.add(cs);
                 }
 
-                timeTableCRN.add(courseCRN);
+                if(!schedules.isEmpty()) {
+                    timeTable.add(schedules);
+                    timeTableCRN.put(timeTableStickerID, courseCRN);
+                    timeTableStickerID++;
+                }
+
             }
         }
     }

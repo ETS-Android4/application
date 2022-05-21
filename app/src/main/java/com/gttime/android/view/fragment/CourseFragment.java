@@ -134,8 +134,6 @@ public class CourseFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        progress = new ProgressDialog(getActivity(), ProgressDialog.STYLE_SPINNER);
-
         universityGroupID = getView().findViewById(R.id.universityGroupID);
         termSpinner = getView().findViewById(R.id.semesterID);
         subjectSpinner = getView().findViewById(R.id.subjectID);
@@ -146,6 +144,13 @@ public class CourseFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+
+        progress = new ProgressDialog(getActivity(), ProgressDialog.STYLE_SPINNER);
+        progress.setTitle("Loading");
+        progress.setMessage("Please wait while loading");
+        progress.setCancelable(true);
+        progress.create();
+        progress.show();
 
         AlertDialog.Builder builder = new AlertDialog.Builder(CourseFragment.this.getActivity());
         alertDialog = builder.setMessage("Connection Error")
@@ -161,8 +166,10 @@ public class CourseFragment extends Fragment {
         universityGroupID.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
-                // TODO: fix error
+
+                progress.show();
                 RadioButton gradeID = group.findViewById(checkedId);
+                gradeID.setChecked(true);
                 selectedUniversity = gradeID.getText().toString();
                 universityID = checkedId;
 
@@ -185,7 +192,8 @@ public class CourseFragment extends Fragment {
                 semesterText = KeyValPair.mapTerm(semesterVal);
                 termAdapter = new ArrayAdapter(getActivity(), android.R.layout.simple_spinner_dropdown_item, semesterText);
                 termSpinner.setAdapter(termAdapter);
-                termSpinner.setSelection(termID);
+
+                progress.dismiss();
             }
         });
 
@@ -193,6 +201,7 @@ public class CourseFragment extends Fragment {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 
+                progress.show();
                 String selectedTerm = termSpinner.getSelectedItem().toString();
                 selectedTermID = String.valueOf(semester.get(selectedTerm));
                 termID = termSpinner.getSelectedItemPosition();
@@ -207,9 +216,10 @@ public class CourseFragment extends Fragment {
                 } catch (Exception e) {
                     alertDialog.show();
                 }
+
                 subjectAdapter = new ArrayAdapter(getActivity(), android.R.layout.simple_spinner_dropdown_item, subjectVal);
                 subjectSpinner.setAdapter(subjectAdapter);
-                subjectSpinner.setSelection(subjectID);
+                progress.dismiss();
             }
 
             @Override
@@ -220,6 +230,7 @@ public class CourseFragment extends Fragment {
         subjectSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                progress.show();
                 selectedArea = subjectSpinner.getSelectedItem().toString();
                 subjectID = subjectSpinner.getSelectedItemPosition();
 
@@ -236,8 +247,7 @@ public class CourseFragment extends Fragment {
 
                 areaAdapter = new ArrayAdapter(getActivity(), android.R.layout.simple_spinner_dropdown_item, areaVal);
                 areaSpinner.setAdapter(areaAdapter);
-                areaSpinner.setSelection(areaID);
-
+                progress.dismiss();
             }
 
             @Override
@@ -280,7 +290,8 @@ public class CourseFragment extends Fragment {
 
         // load stored state
         if(universityID != 0) {
-            universityGroupID.check(universityID);
+            //universityGroupID.check(universityID);
+            ((RadioButton) universityGroupID.findViewById(universityID)).setChecked(true);
             termSpinner.setSelection(termID);
             subjectSpinner.setSelection(subjectID);
             areaSpinner.setSelection(areaID);
@@ -294,6 +305,7 @@ public class CourseFragment extends Fragment {
                 }
             });
 
+        progress.dismiss();
     }
 
     class BackgroundTask extends AsyncTask {
@@ -301,6 +313,8 @@ public class CourseFragment extends Fragment {
 
         @Override
         protected void onPreExecute() {
+            progress.show();
+            courseInfos.clear();
             try {
                 target = "http://ec2-3-238-0-205.compute-1.amazonaws.com/CourseList.php?courseUniversity="+ URLEncoder.encode(selectedUniversity,"UTF-8")
                         +"&courseTerm="+URLEncoder.encode(String.valueOf(semester.get(termSpinner.getSelectedItem())),"UTF-8")+"&courseMajor="+URLEncoder.encode(subjectSpinner.getSelectedItem().toString(),"UTF-8")
@@ -331,7 +345,6 @@ public class CourseFragment extends Fragment {
                     .create();
 
             try {
-                courseInfos.clear();
                 String result = (String) o;
                 JSONObject jsonObject = new JSONObject(result);
                 JSONArray jsonArray = jsonObject.getJSONArray("response");
@@ -399,6 +412,8 @@ public class CourseFragment extends Fragment {
             catch(Exception e) {
                 e.printStackTrace();
             }
+
+            progress.dismiss();
         }
 
     }
