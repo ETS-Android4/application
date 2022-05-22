@@ -21,6 +21,7 @@ import com.gttime.android.util.CallbackListener;
 import com.gttime.android.model.Course;
 import com.gttime.android.mapping.KeyValPair;
 import com.gttime.android.request.Request;
+import com.gttime.android.util.CreditParser;
 import com.gttime.android.view.dialog.FilterSemesterDialog;
 import com.gttime.android.R;
 import com.gttime.android.viewmodel.adapter.StatisticsCourseListAdapter;
@@ -188,7 +189,6 @@ public class StatisticsFragment extends Fragment {
 
 
         new BackgroundTask().execute();
-        totalCredit = 0;
 
     }
 
@@ -221,7 +221,10 @@ public class StatisticsFragment extends Fragment {
 
             courseList.addAll(JSONUtil.fetchCourse((String) o));
 
-            for(int i = 0; i < courseList.size(); i++) totalCredit += IntegerUtil.parseInt(courseList.get(i).getCourseCredit().split(" ")[0]);
+            for(int i = 0; i < courseList.size(); i++) {
+                String creditStr = courseList.get(i).getCourseCredit();
+                totalCredit += CreditParser.parse(creditStr);
+            }
 
             adapter.notifyDataSetChanged();
             statCredit.setText(totalCredit + " Credits");

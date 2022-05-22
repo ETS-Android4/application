@@ -193,6 +193,12 @@ public class CourseFragment extends Fragment {
                 termAdapter = new ArrayAdapter(getActivity(), android.R.layout.simple_spinner_dropdown_item, semesterText);
                 termSpinner.setAdapter(termAdapter);
 
+                if(termID >= semesterText.length) {
+                    termID = 0;
+                }
+
+                termSpinner.setSelection(termID);
+
                 progress.dismiss();
             }
         });
@@ -219,6 +225,13 @@ public class CourseFragment extends Fragment {
 
                 subjectAdapter = new ArrayAdapter(getActivity(), android.R.layout.simple_spinner_dropdown_item, subjectVal);
                 subjectSpinner.setAdapter(subjectAdapter);
+
+                if(subjectID >= subjectVal.length) {
+                    subjectID = 0;
+                }
+
+                subjectSpinner.setSelection(subjectID);
+
                 progress.dismiss();
             }
 
@@ -247,6 +260,13 @@ public class CourseFragment extends Fragment {
 
                 areaAdapter = new ArrayAdapter(getActivity(), android.R.layout.simple_spinner_dropdown_item, areaVal);
                 areaSpinner.setAdapter(areaAdapter);
+
+                if(areaID >= areaVal.length) {
+                    areaID = 0;
+                }
+
+                areaSpinner.setSelection(areaID);
+
                 progress.dismiss();
             }
 

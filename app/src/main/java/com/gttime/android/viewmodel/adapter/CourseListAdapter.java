@@ -12,9 +12,11 @@ import android.widget.TextView;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
+import com.google.common.base.CharMatcher;
 import com.gttime.android.model.Course;
 import com.gttime.android.R;
 import com.gttime.android.model.CourseInfo;
+import com.gttime.android.util.CreditParser;
 import com.gttime.android.view.activity.MainActivity;
 import com.gttime.android.util.IOUtil;
 import com.gttime.android.util.IntegerUtil;
@@ -33,7 +35,7 @@ public class CourseListAdapter extends BaseAdapter {
     private Fragment parent;
     private String userID = MainActivity.userID;
     private String semester;
-    public static int totalCredit;
+    private int totalCredit;
 
     public CourseListAdapter(Context context, List<CourseInfo> courseInfos, Fragment parent) {
         this.context = context;
@@ -41,7 +43,6 @@ public class CourseListAdapter extends BaseAdapter {
         this.parent = parent;
         this.userCourseList = new ArrayList<Course>(); // courseList from user dataabase
         this.semester = "";
-        totalCredit = 0;
     }
 
     @Override
@@ -91,7 +92,6 @@ public class CourseListAdapter extends BaseAdapter {
         courseAttribute.setText(courseInfos.get(position).getCourse().getCourseAttribute());
         courseSeatActual.setText("Actual:" + String.valueOf(courseInfos.get(position).getSeat().getSeatActual()) + '/' + String.valueOf(courseInfos.get(position).getSeat().getSeatCapacity()));
         courseSeatWaitlist.setText("Waitlist:" + String.valueOf(courseInfos.get(position).getSeat().getWaitlistActual()) + '/' + String.valueOf(courseInfos.get(position).getSeat().getWaitlistCapacity()));
-
 
         new BackgroundTask().execute();
 
@@ -165,10 +165,9 @@ public class CourseListAdapter extends BaseAdapter {
                                     }
                                 });
 
-                                userCourseList.add(courseInfos.get(position).getCourse());
+                                String creditStr = courseInfos.get(position).getCourse().getCourseCredit();
+                                totalCredit += CreditParser.parse(creditStr);
 
-                                int credit = IntegerUtil.parseInt(courseInfos.get(position).getCourse().getCourseCredit().split(" ")[0]);
-                                totalCredit+= credit;
                                 return;
                             }
 
@@ -223,9 +222,13 @@ public class CourseListAdapter extends BaseAdapter {
 
         @Override
         protected void onPostExecute(Object o) {
+            totalCredit = 0;
             userCourseList = JSONUtil.fetchCourse((String) o);
 
-            for(int i = 0; i < userCourseList.size(); i++) totalCredit += IntegerUtil.parseInt(userCourseList.get(i).getCourseCredit());
+            for(int i = 0; i < userCourseList.size(); i++) {
+                String creditStr = userCourseList.get(i).getCourseCredit();
+                totalCredit += CreditParser.parse(creditStr);
+            }
         }
     }
 

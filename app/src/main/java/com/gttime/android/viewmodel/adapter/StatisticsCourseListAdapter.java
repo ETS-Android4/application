@@ -12,6 +12,7 @@ import androidx.fragment.app.Fragment;
 
 import com.gttime.android.model.Course;
 import com.gttime.android.R;
+import com.gttime.android.util.CreditParser;
 import com.gttime.android.view.fragment.StatisticsFragment;
 import com.gttime.android.util.IOUtil;
 import com.gttime.android.util.IntegerUtil;
@@ -74,13 +75,15 @@ public class StatisticsCourseListAdapter extends BaseAdapter {
                         boolean success = JSONUtil.deleteCourse(new File(parent.getActivity().getFilesDir(), IOUtil.getFileName(semesterID)), courseList.get(position).getCourseCRN());
                         if(success)
                         {
-                            //parent - 자신을 불러낸 course Fragment 에서 알림창을 띄워줌
                             AlertDialog.Builder alert = new AlertDialog.Builder(parent.getActivity());
                             AlertDialog dialog = alert.setMessage("Course has been deleted from schedule")
                                     .setPositiveButton("OK",null)
                                     .create();
                             dialog.show();
-                            StatisticsFragment.totalCredit -= IntegerUtil.parseInt(courseList.get(position).getCourseCredit().split(" ")[0]);
+
+                            String creditStr = courseList.get(position).getCourseCredit();
+
+                            StatisticsFragment.totalCredit -= CreditParser.parse(creditStr);
                             StatisticsFragment.statCredit.setText(StatisticsFragment.totalCredit + " Credits");
                             courseList.remove(position);
                             notifyDataSetChanged();

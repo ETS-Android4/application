@@ -44,14 +44,6 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
                     mainFragment = new MainFragment();
                 }
 
-                if(mainFragment.isAdded()) {
-                    getSupportFragmentManager()
-                            .beginTransaction()
-                            .show(mainFragment);
-
-                    return true;
-                }
-
                 getSupportFragmentManager()
                         .beginTransaction()
                         .replace(R.id.relativeLayout, mainFragment, "mainFragment")
@@ -65,14 +57,6 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
 
                 if(!this.validateFragment(courseFragment)) {
                     courseFragment = new CourseFragment();
-                }
-
-                if(courseFragment.isAdded()) {
-                    getSupportFragmentManager()
-                            .beginTransaction()
-                            .show(courseFragment);
-
-                    return true;
                 }
 
                 getSupportFragmentManager()
@@ -91,14 +75,6 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
                     scheduleFragment = new ScheduleFragment();
                 }
 
-                if(scheduleFragment.isAdded()) {
-                    getSupportFragmentManager()
-                            .beginTransaction()
-                            .show(scheduleFragment);
-
-                    return true;
-                }
-
                 getSupportFragmentManager()
                         .beginTransaction()
                         .replace(R.id.relativeLayout, scheduleFragment, "scheduleFragment")
@@ -113,14 +89,6 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
 
                 if(!this.validateFragment(statisticFragment)) {
                     statisticFragment = new StatisticsFragment();
-                }
-
-                if(statisticFragment.isAdded()) {
-                    getSupportFragmentManager()
-                            .beginTransaction()
-                            .show(statisticFragment);
-
-                    return true;
                 }
 
                 getSupportFragmentManager()
@@ -147,7 +115,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     private long lastTimeBackPressed;
     @Override
     public void onBackPressed() {
-       if(System.currentTimeMillis() - lastTimeBackPressed <500) {
+       if(System.currentTimeMillis() - lastTimeBackPressed <250) {
            finish();
             return;
         }
